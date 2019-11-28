@@ -109,20 +109,20 @@ module priorityTop(clk, dma_if.DUT dif, commandReg, maskReg, requestReg);
 		else begin DREQ3_ACTIVE_HIGH <= 0; DREQ3_ACTIVE_LOW <= 0; end  		   		
 
 		// DACK polarity
-		if(!commandReg[7] && CH0_SEL && !CH0_MASK)     DACK0_ACTIVE_HIGH <= 1;
-		else if(commandReg[7] && CH0_SEL && !CH0_MASK) DACK0_ACTIVE_LOW <= 1;
+		if(commandReg[7] && CH0_SEL && !CH0_MASK)     DACK0_ACTIVE_HIGH <= 1;
+		else if(!commandReg[7] && CH0_SEL && !CH0_MASK) DACK0_ACTIVE_LOW <= 1;
 		else begin DACK0_ACTIVE_HIGH <= 0; DACK0_ACTIVE_LOW <= 0; end  		   		
 
-		if(!commandReg[7] && CH1_SEL && !CH1_MASK)     DACK1_ACTIVE_HIGH <= 1;
-		else if(commandReg[7] && CH1_SEL && !CH1_MASK) DACK1_ACTIVE_LOW <= 1;
+		if(commandReg[7] && CH1_SEL && !CH1_MASK)     DACK1_ACTIVE_HIGH <= 1;
+		else if(!commandReg[7] && CH1_SEL && !CH1_MASK) DACK1_ACTIVE_LOW <= 1;
 		else begin DACK1_ACTIVE_HIGH <= 0; DACK1_ACTIVE_LOW <= 0; end  		   		
 
-		if(!commandReg[7] && CH2_SEL && !CH2_MASK)     DACK2_ACTIVE_HIGH <= 1;
-		else if(commandReg[7] && CH2_SEL && !CH2_MASK) DACK2_ACTIVE_LOW <= 1;
+		if(commandReg[7] && CH2_SEL && !CH2_MASK)     DACK2_ACTIVE_HIGH <= 1;
+		else if(!commandReg[7] && CH2_SEL && !CH2_MASK) DACK2_ACTIVE_LOW <= 1;
 		else begin DACK2_ACTIVE_HIGH <= 0; DACK2_ACTIVE_LOW <= 0; end  		   		
 
-		if(!commandReg[7] && CH3_SEL && !CH3_MASK)     DACK3_ACTIVE_HIGH <= 1;
-		else if(commandReg[7] && CH3_SEL && !CH3_MASK) DACK3_ACTIVE_LOW <= 1;
+		if(commandReg[7] && CH3_SEL && !CH3_MASK)     DACK3_ACTIVE_HIGH <= 1;
+		else if(!commandReg[7] && CH3_SEL && !CH3_MASK) DACK3_ACTIVE_LOW <= 1;
 		else begin DACK3_ACTIVE_HIGH <= 0; DACK3_ACTIVE_LOW <= 0; end  
 		
 	end
