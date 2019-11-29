@@ -1,3 +1,4 @@
+`include "dmaRegPkg.svh"
 module dmaRegisters(dma_if.DUT dif, clk, resetN);
 
 import dmaRegPkg::*;
@@ -32,7 +33,7 @@ if(resetN)
 	commandReg     <= '0;
 	requestReg     <= '0;
 	maskReg	       <= '0;
-	tempReg        <= '0;		
+	tempReg        <= '0;
 	statusReg      <= '0;
 
 else
@@ -40,31 +41,31 @@ else
 	currAddrReg[1] <= currAddrReg[1];
 	currAddrReg[2] <= currAddrReg[2];
 	currAddrReg[3] <= currAddrReg[3];
-                                       
+
 	currWordReg[0] <= currWordReg[0];
 	currWordReg[1] <= currWordReg[1];
 	currWordReg[2] <= currWordReg[2];
 	currWordReg[3] <= currWordReg[3];
-                                        
+
 	baseAddrReg[0] <= baseAddrReg[0];
 	baseAddrReg[1] <= baseAddrReg[1];
 	baseAddrReg[2] <= baseAddrReg[2];
 	baseAddrReg[3] <= baseAddrReg[3];
-                                        
+
 	baseWordReg[0] <= baseWordReg[0];
 	baseWordReg[1] <= baseWordReg[1];
 	baseWordReg[2] <= baseWordReg[2];
 	baseWordReg[3] <= baseWordReg[3];
-                                        
+
 	modeReg[0]     <= modeReg[0];
 	modeReg[1]     <= modeReg[1];
 	modeReg[2]     <= modeReg[2];
 	modeReg[3]     <= modeReg[3];
-                                        
+
 	commandReg     <= commandReg;
 	requestReg     <= requestReg;
-	maskReg	       <= maskReg;      
-	tempReg        <= tempReg;		
+	maskReg	       <= maskReg;
+	tempReg        <= tempReg;
 	statusReg      <= statusReg ;
 
 
