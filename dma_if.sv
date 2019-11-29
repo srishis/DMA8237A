@@ -1,11 +1,11 @@
 
-interface dma_if(input logic CLK, RESET);
+interface dma_if(input logic CLK, RESET)
 
 	// interface to 8086 processor
 	logic 	    MEMR_N;   		// memory read
 	logic 	    MEMW_N;		// memory write
-	wire 	    	IOR_N;		// IO read
-	wire 	    	IOW_N;		// IO write
+	wire 	    IOR_N;		// IO read
+	wire 	    IOW_N;		// IO write
 	logic 	    HLDA;		// Hold acknowledge from CPU to indicate it has relinquished bus control
 	logic 	    HRQ;		// Hold request from DMA to CPU for bus control
 
@@ -13,7 +13,7 @@ interface dma_if(input logic CLK, RESET);
 	logic [3:0] ADDR_U;		// upper address which connects to address A7-A4 of 8086 CPU
 	wire  [3:0] ADDR_L;		// lower address which connects to address A3-A0 of 8086 CPU
 	wire  [7:0] DB;			// data
-	logic       CS_N; 		// Chip select
+	logic       CS_N; 		// Chip select 
 	logic       AEN;		// address enable
 
 	// Request and Acknowledge interface
@@ -63,3 +63,4 @@ interface dma_if(input logic CLK, RESET);
 	// TODO: assertions (either put here or make separate module)
 
 endinterface
+

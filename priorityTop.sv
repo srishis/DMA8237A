@@ -149,7 +149,7 @@ module priorityTop(clk, dma_if.DUT dif, commandReg, maskReg, requestReg);
 		if(VALID_DACK2 && DACK2_ACTIVE_HIGH) 	  dif.DACK[2] <= 1;
 		else if(VALID_DACK2 && DACK2_ACTIVE_LOW)  dif.DACK[2] <= 0;
 		if(VALID_DACK3 && DACK3_ACTIVE_HIGH) 	  dif.DACK[3] <= 1;
-		else if(VALID_DACK3 && DACK3_ACTIVE_LOW)  dif.DACK[3] <= 0;
+		else if(VALID_DACK	3 && DACK3_ACTIVE_LOW)  dif.DACK[3] <= 0;
 	end
 
 	// check for any valid requests on DREQ lines
