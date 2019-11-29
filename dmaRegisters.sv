@@ -1,72 +1,70 @@
-`include "dmaRegPkg.svh"
-module dmaRegisters(dma_if.DUT dif, clk, resetN);
+module dmaRegisters(dma_if.DUT dif, dmaRegIf drf);
 
-import dmaRegPkg::*;
 
-always_ff@(posedge clk) begin
-if(resetN)
-	currAddrReg[0] <= '0;
-	currAddrReg[1] <= '0;
-	currAddrReg[2] <= '0;
-	currAddrReg[3] <= '0;
+always_ff@(posedge drf.CLK) begin
+if(drf.RESET)
+	drf.currAddrReg[0] <= '0;
+	drf.currAddrReg[1] <= '0;
+	drf.currAddrReg[2] <= '0;
+	drf.currAddrReg[3] <= '0;
 
-	currWordReg[0] <= '0;
-	currWordReg[1] <= '0;
-	currWordReg[2] <= '0;
-	currWordReg[3] <= '0;
+	drf.currWordReg[0] <= '0;
+	drf.currWordReg[1] <= '0;
+	drf.currWordReg[2] <= '0;
+	drf.currWordReg[3] <= '0;
 
-	baseAddrReg[0] <= '0;
-	baseAddrReg[1] <= '0;
-	baseAddrReg[2] <= '0;
-	baseAddrReg[3] <= '0;
+	drf.baseAddrReg[0] <= '0;
+	drf.baseAddrReg[1] <= '0;
+	drf.baseAddrReg[2] <= '0;
+	drf.baseAddrReg[3] <= '0;
 
-	baseWordReg[0] <= '0;
-	baseWordReg[1] <= '0;
-	baseWordReg[2] <= '0;
-	baseWordReg[3] <= '0;
+	drf.baseWordReg[0] <= '0;
+	drf.baseWordReg[1] <= '0;
+	drf.baseWordReg[2] <= '0;
+	drf.baseWordReg[3] <= '0;
 
-	modeReg[0]     <= '0;
-	modeReg[1]     <= '0;
-	modeReg[2]     <= '0;
-	modeReg[3]     <= '0;
+	drf.modeReg[0]     <= '0;
+	drf.modeReg[1]     <= '0;
+	drf.modeReg[2]     <= '0;
+	drf.modeReg[3]     <= '0;
 
-	commandReg     <= '0;
-	requestReg     <= '0;
-	maskReg	       <= '0;
-	tempReg        <= '0;
-	statusReg      <= '0;
+	drf.commandReg     <= '0;
+	drf.requestReg     <= '0;
+	drf.maskReg	   <= '0;
+	drf.tempReg        <= '0;
+	drf.statusReg      <= '0;
 
 else
-	currAddrReg[0] <= currAddrReg[0];
-	currAddrReg[1] <= currAddrReg[1];
-	currAddrReg[2] <= currAddrReg[2];
-	currAddrReg[3] <= currAddrReg[3];
+	drf.currAddrReg[0] <= drf.currAddrReg[0];
+	drf.currAddrReg[1] <= drf.currAddrReg[1];
+	drf.currAddrReg[2] <= drf.currAddrReg[2];
+	drf.currAddrReg[3] <= drf.currAddrReg[3];
 
-	currWordReg[0] <= currWordReg[0];
-	currWordReg[1] <= currWordReg[1];
-	currWordReg[2] <= currWordReg[2];
-	currWordReg[3] <= currWordReg[3];
+	drf.currWordReg[0] <= drf.currWordReg[0];
+	drf.currWordReg[1] <= drf.currWordReg[1];
+	drf.currWordReg[2] <= drf.currWordReg[2];
+	drf.currWordReg[3] <= drf.currWordReg[3];
 
-	baseAddrReg[0] <= baseAddrReg[0];
-	baseAddrReg[1] <= baseAddrReg[1];
-	baseAddrReg[2] <= baseAddrReg[2];
-	baseAddrReg[3] <= baseAddrReg[3];
+	drf.baseAddrReg[0] <= drf.baseAddrReg[0];
+	drf.baseAddrReg[1] <= drf.baseAddrReg[1];
+	drf.baseAddrReg[2] <= drf.baseAddrReg[2];
+	drf.baseAddrReg[3] <= drf.baseAddrReg[3];
 
-	baseWordReg[0] <= baseWordReg[0];
-	baseWordReg[1] <= baseWordReg[1];
-	baseWordReg[2] <= baseWordReg[2];
-	baseWordReg[3] <= baseWordReg[3];
+	drf.baseWordReg[0] <= drf.baseWordReg[0];
+	drf.baseWordReg[1] <= drf.baseWordReg[1];
+	drf.baseWordReg[2] <= drf.baseWordReg[2];
+	drf.baseWordReg[3] <= drf.baseWordReg[3];
 
-	modeReg[0]     <= modeReg[0];
-	modeReg[1]     <= modeReg[1];
-	modeReg[2]     <= modeReg[2];
-	modeReg[3]     <= modeReg[3];
+	drf.modeReg[0]     <= drf.modeReg[0];
+	drf.modeReg[1]     <= drf.modeReg[1];
+	drf.modeReg[2]     <= drf.modeReg[2];
+	drf.modeReg[3]     <= drf.modeReg[3];
 
-	commandReg     <= commandReg;
-	requestReg     <= requestReg;
-	maskReg	       <= maskReg;
-	tempReg        <= tempReg;
-	statusReg      <= statusReg ;
+	drf.commandReg     <= drf.commandReg;
+	drf.requestReg     <= drf.requestReg;
+	drf.maskReg	   <= drf.maskReg;
+	drf.tempReg        <= drf.tempReg;
+	drf.statusReg      <= drf.statusReg;
 
 
 // TODO: always_ff blocks for each registers
