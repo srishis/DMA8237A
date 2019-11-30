@@ -30,7 +30,7 @@ if(drf.RESET)
 
 	drf.commandReg     <= '0;
 	drf.requestReg     <= '0;
-	drf.maskReg	   <= '0;
+	drf.maskReg	       <= '0;
 	drf.tempReg        <= '0;
 	drf.statusReg      <= '0;
 
@@ -62,7 +62,7 @@ else
 
 	drf.commandReg     <= drf.commandReg;
 	drf.requestReg     <= drf.requestReg;
-	drf.maskReg	   <= drf.maskReg;
+	drf.maskReg	       <= drf.maskReg;
 	drf.tempReg        <= drf.tempReg;
 	drf.statusReg      <= drf.statusReg;
 
