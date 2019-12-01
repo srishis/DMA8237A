@@ -6,10 +6,10 @@ enum logic {
 	    	ACTIVE_CYCLE	 	// When State S1-S4, ACTIVE_CYCLE = 1 from FSM
 	   	} DMA_CYCLES_e;
 
-// enum for DMA READ/WRITE transfers
+// enum for DMA transfer types
 enum logic {
-	    	READ,			// 
-	    	WRITE			// 
+	    	WRITE			//mode register[3:2] = 2'b01
+	    	READ,			//mode register[3:2] = 2'b10 
 	   	} DMA_READ_WRITE_e;
 
 enum logic [2:0] {
