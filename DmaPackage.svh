@@ -6,10 +6,10 @@ enum logic {
 	    	ACTIVE_CYCLE	 	// When State S1-S4, ACTIVE_CYCLE = 1 from FSM
 	   	} DMA_CYCLES_e;
 
-// enum for DMA cycles
+// enum for DMA READ/WRITE transfers
 enum logic {
-	    	READ,			// When State S2, ACTIVE_CYCLE = 1 from FSM 
-	    	WRITE			// When State S2, ACTIVE_CYCLE = 1 from FSM
+	    	READ,			// 
+	    	WRITE			// 
 	   	} DMA_READ_WRITE_e;
 
 enum logic [2:0] {
