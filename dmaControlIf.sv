@@ -1,8 +1,9 @@
 interface dmaControlIf(input logic CLK, RESET);
 	
 //logic [3:0] ioRegAddrBuf;      
-logic [7:0] ioAddrBuf;      
-logic [7:0] outAddrBuf;      
+logic [3:0] ioAddrBuf;      
+logic [3:0] outAddrBuf;      
+logic [7:0] ioDataBuf;      
 //logic [7:0] ioRegAddrBuf;      
 //logic [7:0] writeDataBuf;
 //logic [7:0] readDataBuf;
