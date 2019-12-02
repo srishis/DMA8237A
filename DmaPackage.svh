@@ -61,5 +61,25 @@ enum logic [2:0] {
 		   CURRENT_CH3_PRIORITY, NEXT_CH3_PRIORITY
 		} CHANNEL_PRIORITY_e;
 
+ // index for each state in the state register
+  enum logic [2:0] {
+  	iSI   = 0,
+  	iS0   = 1,
+  	iS1   = 2,
+  	iS2   = 3,
+  	iS3   = 4,
+  	iS4   = 5
+  } stateIndex;
+  
+  // declaration of fsm states onehot encoding
+  enum logic [5:0] {
+  	SI   = 6'b000001 << iSI, 
+  	S0   = 6'b000001 << iS0, 
+  	S1   = 6'b000001 << iS1, 
+  	S2   = 6'b000001 << iS2, 
+  	S3   = 6'b000001 << iS3, 
+  	S4   = 6'b000001 << iS4, 
+  	} state, next;
+
 
 endpackage
