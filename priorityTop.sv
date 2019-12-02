@@ -100,14 +100,14 @@ module priorityTop(clk, dma_if.DUT dif, commandReg, maskReg, requestReg);
 	// setting DACK output if valid DREQ based on polarity
 	// TODO: update DACK based on output from Priority Encoder
 	always_ff@(posedge clk) begin
-		if(VALID_DREQ0 && DACK0_ACTIVE_HIGH) 	  dif.DACK[0] <= 1;
-		else if(VALID_DREQ0 && DACK0_ACTIVE_LOW)  dif.DACK[0] <= 0;
-		if(VALID_DREQ1 && DACK1_ACTIVE_HIGH) 	  dif.DACK[1] <= 1;
-		else if(VALID_DREQ1 && DACK1_ACTIVE_LOW)  dif.DACK[1] <= 0;
-		if(VALID_DREQ2 && DACK2_ACTIVE_HIGH) 	  dif.DACK[2] <= 1D
-		else if(VALID_DREQ2 && DACK2_ACTIVE_LOW)  dif.DACK[2] <= 0;
-		if(VALID_DREQ3 && DACK3_ACTIVE_HIGH) 	  dif.DACK[3] <= 1;
-		else if(VALID_DREQ3 && DACK3_ACTIVE_LOW)  dif.DACK[3] <= 0;
+		if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH) 	   dif.DACK[0] <= 1;
+		else if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)  dif.DACK[0] <= 0;
+		if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_HIGH) 	   dif.DACK[1] <= 1;
+		else if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_LOW)  dif.DACK[1] <= 0;
+		if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_HIGH) 	   dif.DACK[2] <= 1;
+		else if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_LOW)  dif.DACK[2] <= 0;
+		if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_HIGH) 	   dif.DACK[3] <= 1;
+		else if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_LOW)  dif.DACK[3] <= 0;
 	end
 	
 	// check for any valid requests on DREQ lines	
@@ -116,14 +116,16 @@ module priorityTop(clk, dma_if.DUT dif, commandReg, maskReg, requestReg);
 		else						       	     validDREQ <= 0;
 	end
 
+	always_comb dif.HRQ = 	cif.hrq;
 	// setting HRQ output if valid DREQ based on polarity and select priority encoding
 	//TODO: how many encoders?
 	always_ff@(posedge clk) begin
-		if(validDREQ && HLDA)	
-		dif.HRQ <= 1;
-			if(rotatingPriority) enRotatingPriorityEncoder <= 1; 
-			else		     enFixedPriorityEncoder <= 1;
-	else	dif.HRQ <= 0;
+		//if(validDREQ && HLDA)	
+		//if(validDREQ)	
+		//dif.HRQ <= 1;
+			if(validDREQ && rotatingPriority) 			enRotatingPriorityEncoder <= 1; 
+			else if(validDREQ && !rotatingPriority)		        enFixedPriorityEncoder <= 1;
+	//else	dif.HRQ <= 0;
 	end
 	
 	// Fixed priority encoder
@@ -131,16 +133,44 @@ module priorityTop(clk, dma_if.DUT dif, commandReg, maskReg, requestReg);
 	always_comb begin
 		if(enFixedPriorityEncoder)
 			priority case(1'b1) // reverse case
-			 VALID_DREQ0  :  encoderOut <= 4'b0001; 	 
-			 VALID_DREQ1  :  encoderOut <= 4'b0010; 	 
-			 VALID_DREQ2  :  encoderOut <= 4'b0100; 	 
-			 VALID_DREQ3  :  encoderOut <= 4'b1000; 	 
+			 //VALID_DREQ0  :  encoderOut <= 4'b0001; 	 
+			 //VALID_DREQ1  :  encoderOut <= 4'b0010; 	 
+			 //VALID_DREQ2  :  encoderOut <= 4'b0100; 	 
+			 //VALID_DREQ3  :  encoderOut <= 4'b1000; 	 
+
+			 VALID_DREQ0  : encoderOut = VALID_DREQ0; 	 
+			 VALID_DREQ1  : encoderOut = VALID_DREQ1; 	 
+			 VALID_DREQ2  : encoderOut = VALID_DREQ2; 	 
+			 VALID_DREQ3  : encoderOut = VALID_DREQ3; 	 
 			endcase
-		else			encoderOut <= '0;
+		else if(enRotatingPriorityEncoder)
+			if(CH0_PRIORITY == 2'b11) encoderOut = VALID_DREQ0;
+			else if(CH1_PRIORITY == 2'b11) encoderOut = VALID_DREQ0;
+			else if(CH2_PRIORITY == 2'b11) encoderOut = VALID_DREQ0;
+			else if(CH3_PRIORITY == 2'b11) encoderOut = VALID_DREQ0;
 	end	
+
+	always_comb begin
+		if(encoderOut == VALID_DREQ0) VALID_DACK0 = 1'b1;
+		else if(encoderOut == VALID_DREQ1) VALID_DACK1 = 1'b1;
+		else if(encoderOut == VALID_DREQ2) VALID_DACK2 = 1'b1;
+		else if(encoderOut == VALID_DREQ3) VALID_DACK3 = 1'b1;
+	end                                                     
 
 	
 	// TODO: Rotating priority logic 
+	always_ff@(posedge dma_if.CLK) begin
+		if(dma_if.RESET) {CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {8'b11100100}; //3,2,1,0
+		else {CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {NEXT_CH0_PRIORITY, NEXT_CH1_PRIORITY, NEXT_CH2_PRIORITY, NEXT_CH3_PRIORITY};
+
+	always_ff@(posedge dma_if.CLK) begin
+		if(VALID_DREQ0)      begin NEXT_CH0_PRIORITY <= 2'b00; NEXT_CH1_PRIORITY <= CH1_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
+		else if(VALID_DREQ1) begin NEXT_CH1_PRIORITY <= 2'b00; NEXT_CH0_PRIORITY <= CH0_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
+		else if(VALID_DREQ2) begin NEXT_CH2_PRIORITY <= 2'b00; NEXT_CH0_PRIORITY <= CH0_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
+		else if(VALID_DREQ3) begin NEXT_CH3_PRIORITY <= 2'b00; NEXT_CH0_PRIORITY <= CH0_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
+	end
+
+		
 
 	
 

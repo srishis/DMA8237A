@@ -33,5 +33,7 @@ logic iow;		//@Janisha: FSM output in S1-S4 state
 logic memr;		//@Janisha: FSM output in S1-S4 state
 logic memw;		//@Janisha: FSM output in S1-S4 state
 //logic [15:0] TC;
-
-endinterface
+logic validDREQ;
+logic hrq;
+logic validDACK;
+logic writeExtend;
