@@ -27,4 +27,16 @@ logic ldtempCurrWord;
 logic Program; 
 
 
+//modport DATAPATH(
+//		inout ioAddrBuf,
+//		inout ioDataBuf,
+//		output outAddrBuf
+//);
+//
+//modport REG(
+//		inout ioAddrBuf,
+//		inout ioDataBuf,
+//		output outAddrBuf
+//);
+
 endinterface
