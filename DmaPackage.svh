@@ -6,11 +6,11 @@ enum logic {
 	    	ACTIVE_CYCLE	 	// When State S1-S4, ACTIVE_CYCLE = 1 from FSM
 	   	} DMA_CYCLES_e;
 
-// enum for DMA transfer types
-enum logic {
-	    	WRITE			//mode register[3:2] = 2'b01
-	    	READ,			//mode register[3:2] = 2'b10 
-	   	} DMA_READ_WRITE_e;
+//// enum for DMA transfer types
+//enum logic {
+//	    	WRITE			//mode register[3:2] = 2'b01
+//	    	READ,			//mode register[3:2] = 2'b10 
+//	   	} DMA_READ_WRITE_e;
 
 enum logic [2:0] {
 		DREQ0_ACTIVE_HIGH, DREQ0_ACTIVE_LOW,
@@ -55,10 +55,10 @@ enum logic [1:0] {
 		} VALID_DACK_e;
 
 enum logic [2:0] {
-		   CURRENT_CH0_PRIORITY, NEXT_CH0_PRIORITY,
-		   CURRENT_CH1_PRIORITY, NEXT_CH1_PRIORITY, 
-		   CURRENT_CH2_PRIORITY, NEXT_CH2_PRIORITY,
-		   CURRENT_CH3_PRIORITY, NEXT_CH3_PRIORITY
+		   CH0_PRIORITY, NEXT_CH0_PRIORITY,
+		   CH1_PRIORITY, NEXT_CH1_PRIORITY, 
+		   CH2_PRIORITY, NEXT_CH2_PRIORITY,
+		   CH3_PRIORITY, NEXT_CH3_PRIORITY
 		} CHANNEL_PRIORITY_e;
 
  // index for each state in the state register

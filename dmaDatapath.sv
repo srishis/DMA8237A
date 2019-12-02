@@ -21,11 +21,11 @@ always_comb dif.IOR_N = if(ACTIVE_CYCLE && READ) ? cif.ior : 1'bz; // access dat
 
 always_comb dif.IOW_N = if(ACTIVE_CYCLE && WRITE) ? cif.iow : 1'bz; // load data to peripheral during DMA read transfer
 
-// MEM Read logic
-always_comb dif.MEMR_N = if(ACTIVE_CYCLE && READ) ? cif.memr : 1'bz;
-
-// MEM Write logic
-always_comb dif.MEMW_N = if(ACTIVE_CYCLE && WRITE) ? cif.memw : 1'bz;
+//// MEM Read logic
+//always_comb dif.MEMR_N = if(ACTIVE_CYCLE && READ) ? cif.memr : 1'bz;
+//
+//// MEM Write logic
+//always_comb dif.MEMW_N = if(ACTIVE_CYCLE && WRITE) ? cif.memw : 1'bz;
 
 
 // EOP logic
