@@ -2,12 +2,11 @@
 // Priority encoder and Rotating priority logic
 //-------------------------------------------------
 
-//`include "DmaPackage.svh"
-module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif); 
 
-	//import DmaPackage::*;
+module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif); 
 	
-	logic validDREQ, pencoderOut;
+	logic validDREQ; 
+	logic [3:0] pencoderOut;
 	logic rotatingPripority, enFixedPriority, enRotatingPriority;
 	 
 // decoding registers for valid cif.DREQ
@@ -128,31 +127,27 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 	
 	// Fixed priority encoder
 	always_comb begin
+		pencoderOut = '0;
 		if(enFixedPriority)
 			priority case(1'b1) // reverse case
-			 //cif.VALIDDREQ0  :  encoderOut <= 4'b0001; 	 
-			 //cif.VALIDDREQ1  :  encoderOut <= 4'b0010; 	 
-			 //cif.VALIDDREQ2  :  encoderOut <= 4'b0100; 	 
-			 //cif.VALIDDREQ3  :  encoderOut <= 4'b1000; 	 
-
-			 cif.VALID_DREQ0  : pencoderOut = cif.VALID_DREQ0; 	 
-			 cif.VALID_DREQ1  : pencoderOut = cif.VALID_DREQ1; 	 
-			 cif.VALID_DREQ2  : pencoderOut = cif.VALID_DREQ2; 	 
-			 cif.VALID_DREQ3  : pencoderOut = cif.VALID_DREQ3; 	 
+			 cif.VALID_DREQ0  : pencoderOut = 4'b0001; 	 
+			 cif.VALID_DREQ1  : pencoderOut = 4'b0010; 	 
+			 cif.VALID_DREQ2  : pencoderOut = 4'b0100; 	 
+			 cif.VALID_DREQ3  : pencoderOut = 4'b1000; 	 
 			endcase
 
 		else if(enRotatingPriority)
-			if(cif.CH0_PRIORITY == 2'b11) 	pencoderOut = cif.VALIDDREQ0;
-			else if(cif.CH1_PRIORITY == 2'b11)  pencoderOut = cif.VALIDDREQ1;
-			else if(cif.CH2_PRIORITY == 2'b11)  pencoderOut = cif.VALIDDREQ2;
-			else if(cif.CH3_PRIORITY == 2'b11)  pencoderOut = cif.VALIDDREQ3;
+			if(cif.CH0_PRIORITY == 2'b11) 	    pencoderOut = 4'b0001;
+			else if(cif.CH1_PRIORITY == 2'b11)  pencoderOut = 4'b0010;
+			else if(cif.CH2_PRIORITY == 2'b11)  pencoderOut = 4'b0100;
+			else if(cif.CH3_PRIORITY == 2'b11)  pencoderOut = 4'b1000;
 	end	
 
 	always_comb begin
-		if(pencoderOut == cif.VALID_DREQ0)      begin cif.VALID_DACK0 = 1'b1; cif.VALID_DACK1 = 1'b0; cif.VALID_DACK2 = 1'b0; cif.VALID_DACK3 = 1'b0; end
-		else if(pencoderOut == cif.VALID_DREQ1) begin cif.VALID_DACK1 = 1'b1; cif.VALID_DACK2 = 1'b0; cif.VALID_DACK3 = 1'b0; cif.VALID_DACK0 = 1'b0; end
-		else if(pencoderOut == cif.VALID_DREQ2) begin cif.VALID_DACK2 = 1'b1; cif.VALID_DACK3 = 1'b0; cif.VALID_DACK0 = 1'b0; cif.VALID_DACK0 = 1'b0; end
-		else if(pencoderOut == cif.VALID_DREQ3) begin cif.VALID_DACK3 = 1'b1; cif.VALID_DACK0 = 1'b0; cif.VALID_DACK1 = 1'b0; cif.VALID_DACK2 = 1'b0; end
+		if(pencoderOut == 4'b0001)      begin cif.VALID_DACK0 = 1'b1; cif.VALID_DACK1 = 1'b0; cif.VALID_DACK2 = 1'b0; cif.VALID_DACK3 = 1'b0; end
+		else if(pencoderOut == 4'b0010) begin cif.VALID_DACK1 = 1'b1; cif.VALID_DACK2 = 1'b0; cif.VALID_DACK3 = 1'b0; cif.VALID_DACK0 = 1'b0; end
+		else if(pencoderOut == 4'b0100) begin cif.VALID_DACK2 = 1'b1; cif.VALID_DACK3 = 1'b0; cif.VALID_DACK0 = 1'b0; cif.VALID_DACK0 = 1'b0; end
+		else if(pencoderOut == 4'b1000) begin cif.VALID_DACK3 = 1'b1; cif.VALID_DACK0 = 1'b0; cif.VALID_DACK1 = 1'b0; cif.VALID_DACK2 = 1'b0; end
 	end                                                     
 
 	
@@ -172,6 +167,8 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 		
 
 endmodule
+
+
 
 
 
