@@ -110,7 +110,7 @@ always_comb begin
 // default values for control outputs
 {cif.aen, cif.adstb, cif.ACTIVE_CYCLE, cif.IDLE_CYCLE, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 8'b00000000;  
 {cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 5'b00000; 
-{cif.validDACK,  cif.writeExtend} = 2'b00;    		 
+cif.validDACK = 1'b0;    		 
 
     unique case(1'b1)  // reverse case
 
