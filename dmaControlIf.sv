@@ -22,8 +22,8 @@ logic ldCurrAddrTemp;
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
 logic enCurrWord; 
-logic ldtempCurrAddr; 
-logic ldtempCurrWord; 
+logic ldTempCurrAddr; 
+logic ldTempCurrWord; 
 logic Program; 
 
 
