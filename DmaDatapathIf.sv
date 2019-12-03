@@ -9,6 +9,8 @@ logic [7:0]  commandReg;
 logic [7:0]  requestReg;
 logic [7:0]  maskReg;
 logic [7:0]  tempReg;
+logic [7:0]  tempAddrReg;
+logic [7:0]  tempWordReg;
 logic [7:0]  statusReg;
 
 modport PRIORITY(
@@ -33,6 +35,8 @@ modport REG(
 		output  requestReg,
 		output  maskReg,
 		output  tempReg,
+		output  tempAddrReg,
+		output  tempWordReg,
 		output  statusReg	
 	);
 
