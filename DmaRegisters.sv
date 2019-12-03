@@ -53,9 +53,9 @@ always_ff@(posedge dma_if.CLK)
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[2])
                   begin
                       if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
-                        drf.baseAddrReg[drf.requestReg[2]][15:8] <= drf.writeBuf;
+                        drf.baseAddrReg[2][15:8] <= drf.writeBuf;
                       else
-                        drf.baseAddrReg[drf.requestReg[2]][7:0] <= drf.writeBuf;
+                        drf.baseAddrReg[2][7:0] <= drf.writeBuf;
                   end
 //the command code for Writing the base and current register -> base Address Reg 3
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[3])
@@ -85,7 +85,10 @@ always_ff@(posedge dma_if.CLK)
       begin
           if(dma_if.Reset||drf.masterClear)
              begin
-               drf.baseWordReg[drf.requestReg[1:0]] <= '0;
+               drf.baseWordReg[0] <= '0;
+               drf.baseWordReg[1] <= '0;
+               drf.baseWordReg[2] <= '0;
+               drf.baseWordReg[3] <= '0;
              end
 // command code to write the base and current word count register - base count reg 0
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[0])
@@ -139,7 +142,10 @@ always_ff@(posedge dma_if.CLK)
  
           if(dma_if.RESET||drf.masterClear)
              begin
-                  drf.currAddrReg[drf.requestReg[1:0]] <= '0;
+                  drf.currAddrReg[0] <= '0;
+                  drf.currAddrReg[1] <= '0;
+                  drf.currAddrReg[2] <= '0;
+                  drf.currAddrReg[3] <= '0;
              end
 //When TC is reached and the auto initialization is disabled, the value to be set to zero
             else if ((cif.TC[drf.requestReg[1:0]])&&(drf.modeReg[4]==0))
@@ -239,7 +245,10 @@ always_ff@(posedge dma_if.CLK)
  
           if(drf.RESET||drf.masterClear)
             begin
-               drf.currWordReg[drf.requestReg[1:0]] <= '0; 
+               drf.currWordReg[0] <= '0; 
+               drf.currWordReg[1] <= '0; 
+               drf.currWordReg[2] <= '0; 
+               drf.currWordReg[3] <= '0; 
             end 
        
           else if((cif.TC[drf.requestReg[1:0]])&&(drf.modeReg[4]==0))
@@ -337,7 +346,10 @@ always_ff@(posedge dma_if.CLK)
          begin
              if(dma_if.RESET||drf.masterClear)
                begin
-                   drf.tempAddrReg[drf.requestReg[1:0]] <= '0;
+                   drf.tempAddrReg[0] <= '0;
+                   drf.tempAddrReg[1] <= '0;
+                   drf.tempAddrReg[2] <= '0;
+                   drf.tempAddrReg[3] <= '0;
                 end 
             else if(cif.ldCurrAddrTemp)     //to load the current address into temporary register and then increment or decrement
                     begin   
@@ -349,7 +361,12 @@ always_ff@(posedge dma_if.CLK)
                           drf.tempAddrReg[drf.requestReg[1:0]] <= drf.tempAddrReg[drf.requestReg[1:0]]  - 16'b0000000000000001;
                     end
              else
-                 drf.tempAddrReg <= drf.tempAddrReg;
+                  begin
+                 drf.tempAddrReg[0] <= drf.tempAddrReg[0];
+                 drf.tempAddrReg[1] <= drf.tempAddrReg[1];
+                 drf.tempAddrReg[2] <= drf.tempAddrReg[2];
+                 drf.tempAddrReg[3] <= drf.tempAddrReg[3];
+                 end
          end
 
 // Temporary Word Register
@@ -357,7 +374,12 @@ always_ff@(posedge dma_if.CLK)
 always_ff@(posedge dma_if.CLK)
          begin
            if(dma_if.RESET||drf.masterClear)
-                   drf.tempWordReg[drf.requestReg[1:0]] <= '0; 
+                   begin
+                   drf.tempWordReg[0] <= '0;
+		   drf.tempWordReg[0] <= '0;
+		   drf.tempWordReg[0] <= '0;
+		   drf.tempWordReg[0] <= '0;
+                     end 
             else if(cif.ldCurrWordTemp)
                 begin
                  drf.tempWordReg[drf.requestReg[1:0]] <= drf.currWordReg[drf.requestReg[1:0]];
@@ -368,9 +390,13 @@ always_ff@(posedge dma_if.CLK)
               cif.TC[drf.requestReg[1:0]] <= 1;
               drf.tempWordReg[drf.requestReg[1:0]] <= 16'b1111111111111111;
              end
-            else 
-              drf.tempWordReg[drf.requestReg[1:0]] <= drf.tempWordReg[drf.requestReg[1:0]];
-             
+            else
+               begin 
+              drf.tempWordReg[0] <= drf.tempWordReg[0];
+              drf.tempWordReg[0] <= drf.tempWordReg[0];
+              drf.tempWordReg[0] <= drf.tempWordReg[0];
+              drf.tempWordReg[0] <= drf.tempWordReg[0];
+              end 
           end
  
 
@@ -381,7 +407,12 @@ always_ff@(posedge dma_if.CLK)
           begin
           
           if(dma_if.RESET||drf.masterClear)
-             drf.modeReg[drf.requestReg[1:0]] <= 16'b0;
+            begin
+             drf.modeReg[0] <= 16'b0;
+             drf.modeReg[1] <= 16'b0;
+             drf.modeReg[2] <= 16'b0;
+             drf.modeReg[3] <= 16'b0;
+            end
 //Mode Register 0
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[0])
                drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];  
