@@ -1,7 +1,7 @@
-`include "DmaPackage.svh"
+//`include "DmaPackage.svh"
 module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
 
-import DmaPackage::*; 
+//import DmaPackage::*; 
  // index for each state in the state register
  enum logic [2:0] {
   	iSI   = 0,
