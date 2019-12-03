@@ -2,10 +2,10 @@
 // Priority encoder and Rotating priority logic
 //-------------------------------------------------
 
-`include "DmaPackage.svh"
+//`include "DmaPackage.svh"
 module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif); 
 
-	import DmaPackage::*;
+	//import DmaPackage::*;
 	
 	logic validDREQ, pencoderOut;
 	logic rotatingPripority, enFixedPriority, enRotatingPriority;
