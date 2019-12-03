@@ -8,15 +8,16 @@ logic ior;		//@Janisha: FSM output in S1-S4 state
 logic iow;		//@Janisha: FSM output in S1-S4 state
 logic hrq;
 logic validDACK;
-logic writeExtend;
+//logic writeExtend;
 logic checkWriteExtend;
 logic checkEOP;
-logic checkReadWrite;
+logic checkRead;
+logic checkWrite;
 
 logic ldCurrAddrTemp; 
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
-logic enCurrWord; 
+//logic enCurrWord; 
 logic ldTempCurrAddr; 
 logic ldTempCurrWord; 
 logic Program; 
