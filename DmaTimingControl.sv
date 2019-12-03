@@ -89,8 +89,7 @@ always_comb begin
             state[iS2] :  
                         begin
 			if(!dif.EOP_N) 						          		nextstate = SI;
-                        else if(!cif.writeExtend)                                         		nextstate = S4;   
-			else if(cif.writeExtend)					  		nextstate = S3;
+                        else					  		                        nextstate = S3;
                         end
 
             state[iS3] :
