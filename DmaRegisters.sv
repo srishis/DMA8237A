@@ -24,23 +24,55 @@ localparam MASTERCLEARREG                = 8'b10101101;
 always_ff@(posedge dma_if.CLK)
       begin
  
+
           if(dma_if.RESET||drf.masterClear)                  //When Reset, the value is set to zero.
              begin
-               drf.baseAddrReg[drf.requestReg[1:0]] <= '0;
+               drf.baseAddrReg[0] <= '0;
+               drf.baseAddrReg[1] <= '0;
+               drf.baseAddrReg[2] <= '0;
+               drf.baseAddrReg[3] <= '0;
              end
  
-  //the command code for Writing the base and current register       
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[drf.requestReg[1:0]])
+  //the command code for Writing the base and current register -> base Address Reg 0     
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[0])
                   begin
                       if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
-                        drf.baseAddrReg[drf.requestReg[1:0]][15:8] <= drf.writeBuf;
+                        drf.baseAddrReg[0][15:8] <= drf.writeBuf;
                       else
-                        drf.baseAddrReg[drf.requestReg[1:0]][7:0] <= drf.writeBuf;
+                        drf.baseAddrReg[0][7:0] <= drf.writeBuf;
                   end
+//the command code for Writing the base and current register -> base Address Reg 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[1])
+                  begin
+                      if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
+                        drf.baseAddrReg[1][15:8] <= drf.writeBuf;
+                      else
+                        drf.baseAddrReg[1][7:0] <= drf.writeBuf;
+                  end
+//the command code for Writing the base and current register -> base Address Reg 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[2])
+                  begin
+                      if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
+                        drf.baseAddrReg[drf.requestReg[2]][15:8] <= drf.writeBuf;
+                      else
+                        drf.baseAddrReg[drf.requestReg[2]][7:0] <= drf.writeBuf;
+                  end
+//the command code for Writing the base and current register -> base Address Reg 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[3])
+                  begin
+                      if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
+                        drf.baseAddrReg[3][15:8] <= drf.writeBuf;
+                      else
+                        drf.baseAddrReg[3][7:0] <= drf.writeBuf;
+                  end
+
 
           else
               begin 
-               drf.baseAddrReg[drf.requestReg[1:0]] <= drf.baseAddrReg[drf.requestReg[1:0]];
+               drf.baseAddrReg[0] <= drf.baseAddrReg[0];
+               drf.baseAddrReg[1] <= drf.baseAddrReg[1];
+               drf.baseAddrReg[2] <= drf.baseAddrReg[2];
+               drf.baseAddrReg[3] <= drf.baseAddrReg[3];
               end
 
          
@@ -55,18 +87,46 @@ always_ff@(posedge dma_if.CLK)
              begin
                drf.baseWordReg[drf.requestReg[1:0]] <= '0;
              end
-// command code to write the base and current word count register
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[drf.requestReg[1:0]])
+// command code to write the base and current word count register - base count reg 0
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[0])
                   begin
                     if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded 
-                       drf.baseWordReg[drf.requestReg[1:0]][15:8] <= drf.writeBuf;
+                       drf.baseWordReg[0][15:8] <= drf.writeBuf;
                     else
-                       drf.baseWordReg[drf.requestReg[1:0]][7:0] <= drf.writeBuf;
+                       drf.baseWordReg[0][7:0] <= drf.writeBuf;
+                  end
+// command code to write the base and current word count register - base count reg 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[1])
+                  begin
+                    if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded 
+                       drf.baseWordReg[1][15:8] <= drf.writeBuf;
+                    else
+                       drf.baseWordReg[1][7:0] <= drf.writeBuf;
+                  end
+// command code to write the base and current word count register - base count reg 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[2])
+                  begin
+                    if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded 
+                       drf.baseWordReg[2][15:8] <= drf.writeBuf;
+                    else
+                       drf.baseWordReg[2][7:0] <= drf.writeBuf;
+                  end
+
+// command code to write the base and current word count register - base count reg 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[3])
+                  begin
+                    if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded 
+                       drf.baseWordReg[3][15:8] <= drf.writeBuf;
+                    else
+                       drf.baseWordReg[3][7:0] <= drf.writeBuf;
                   end
 
           else 
               begin 
-                drf.baseWordReg[drf.requestReg[1:0]] <= drf.baseWordReg[drf.requestReg[1:0]] ;
+                drf.baseWordReg[0] <= drf.baseWordReg[0] ;
+                drf.baseWordReg[1] <= drf.baseWordReg[1] ;
+                drf.baseWordReg[2] <= drf.baseWordReg[2] ;
+                drf.baseWordReg[3] <= drf.baseWordReg[3] ;
               end
 
        end          
@@ -91,29 +151,86 @@ always_ff@(posedge dma_if.CLK)
                 begin  
                   drf.currAddrReg[drf.requestReg[1:0]] <= drf.baseAddrReg[drf.requestReg[1:0]]; 
                 end
-//command code to write curr and base address registers          
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[drf.requestReg[1:0]])
+//command code to write curr and base address registers     current Address Reg 0      
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[0])
                   begin
                     if(drf.FF)
-                       drf.currAddrReg[drf.requestReg[1:0]][15:8] <= drf.writeBuf;
+                       drf.currAddrReg[0][15:8] <= drf.writeBuf;
                     else
-                       drf.currAddrReg[drf.requestReg[1:0]][7:0] <= drf.writeBuf;
+                       drf.currAddrReg[0][7:0] <= drf.writeBuf;
                   end
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRADDR[drf.requestReg[1:0]])
+//command code to write curr and base address registers     current Address Reg 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[1])
                   begin
                     if(drf.FF)
-                       drf.readBuf <= drf.currAddrReg[drf.requestReg[1:0]][15:8];
+                       drf.currAddrReg[1][15:8] <= drf.writeBuf;
                     else
-                       drf.readBuf <= drf.currAddrReg[drf.requestReg[1:0]][7:0];
+                       drf.currAddrReg[1][7:0] <= drf.writeBuf;
                   end
+//command code to write curr and base address registers     current Address Reg 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[2])
+                  begin
+                    if(drf.FF)
+                       drf.currAddrReg[2][15:8] <= drf.writeBuf;
+                    else
+                       drf.currAddrReg[2][7:0] <= drf.writeBuf;
+                  end
+//command code to write curr and base address registers     current Address Reg 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRADDR[3])
+                  begin
+                    if(drf.FF)
+                       drf.currAddrReg[3][15:8] <= drf.writeBuf;
+                    else
+                       drf.currAddrReg[3][7:0] <= drf.writeBuf;
+                  end
+
+//Read Current Address Register 0 
+
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRADDR[0])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currAddrReg[0][15:8];
+                    else
+                       drf.readBuf <= drf.currAddrReg[0][7:0];
+                  end
+//Read Current Address Register 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRADDR[1])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currAddrReg[1][15:8];
+                    else
+                       drf.readBuf <= drf.currAddrReg[1][7:0];
+                  end
+//Read Current Address Register 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRADDR[2])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currAddrReg[2][15:8];
+                    else
+                       drf.readBuf <= drf.currAddrReg[2][7:0];
+                  end
+//Read Current Address Register 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRADDR[3])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currAddrReg[3][15:8];
+                    else
+                       drf.readBuf <= drf.currAddrReg[3][7:0];
+                  end
+
           else if(cif.enCurrAddr) 
                   begin         // to give the most significant 8 bits as output to the i/o data bus
                     drf.ioDataBuf <= drf.currAddrReg[drf.requestReg[1:0]][15:8];
                   end
            else if(cif.ldTempCurrAddr)      //signal to load the temporary address register to current address register value 
-                  drf.currAddrReg <= drf.tempAddrReg;
-
-                             
+                  drf.currAddrReg[drf.requestReg[1:0]] <= drf.tempAddrReg;
+          else
+              begin
+                  drf.currAddrReg[0] <= drf.currAddrReg[0];
+                  drf.currAddrReg[1] <= drf.currAddrReg[1];
+                  drf.currAddrReg[2] <= drf.currAddrReg[2];
+                  drf.currAddrReg[3] <= drf.currAddrReg[3];
+                end             
          end
           
 // Current Word Register                     
@@ -134,28 +251,81 @@ always_ff@(posedge dma_if.CLK)
              begin
                  drf.currWordReg[drf.requestReg[1:0]] <= drf.baseWordReg[drf.requestReg[1:0]];
              end
- 
-         else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[drf.requestReg[1:0]])
+//write Current word 0
+         else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[0])
                   begin
                     if(drf.FF)
-                       drf.currWordReg[drf.requestReg[1:0]][15:8] <= drf.writeBuf;
+                       drf.currWordReg[0][15:8] <= drf.writeBuf;
                     else
-                       drf.currWordReg[drf.requestReg[1:0]][7:0] <= drf.writeBuf;
+                       drf.currWordReg[0][7:0] <= drf.writeBuf;
                   end
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRCOUNT[drf.requestReg[1:0]])
+//write Current word 1
+         else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[1])
                   begin
                     if(drf.FF)
-                       drf.readBuf <= drf.currWordReg[drf.requestReg[1:0]][15:8];
+                       drf.currWordReg[1][15:8] <= drf.writeBuf;
                     else
-                       drf.readBuf <= drf.currWordReg[drf.requestReg[1:0]][7:0];
+                       drf.currWordReg[1][7:0] <= drf.writeBuf;
+                  end
+//write Current word 2
+         else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[2])
+                  begin
+                    if(drf.FF)
+                       drf.currWordReg[2][15:8] <= drf.writeBuf;
+                    else
+                       drf.currWordReg[2][7:0] <= drf.writeBuf;
+                  end
+//write Current word 3
+         else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == WRITEBASECURRCOUNT[3])
+                  begin
+                    if(drf.FF)
+                       drf.currWordReg[3][15:8] <= drf.writeBuf;
+                    else
+                       drf.currWordReg[3][7:0] <= drf.writeBuf;
+                  end
+
+//read current word 0
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRCOUNT[0])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currWordReg[0][15:8];
+                    else
+                       drf.readBuf <= drf.currWordReg[0][7:0];
+                  end
+//read current word 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRCOUNT[1])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currWordReg[1][15:8];
+                    else
+                       drf.readBuf <= drf.currWordReg[1][7:0];
+                  end
+//read current word 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRCOUNT[2])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currWordReg[2][15:8];
+                    else
+                       drf.readBuf <= drf.currWordReg[2][7:0];
+                  end
+//read current word 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == READCURRCOUNT[3])
+                  begin
+                    if(drf.FF)
+                       drf.readBuf <= drf.currWordReg[3][15:8];
+                    else
+                       drf.readBuf <= drf.currWordReg[3][7:0];
                   end
            else if(cif.ldTempCurrWord)     //signal to load the temporary address register to current address register value
                 begin
-                  drf.currWordReg <= drf.tempWordReg;
+                  drf.currWordReg[drf.requestReg[1:0]] <= drf.tempWordReg;
                 end
           else
               begin 
-               drf.currWordReg[drf.requestReg[1:0]] <= drf.currWordReg[drf.requestReg[1:0]];
+               drf.currWordReg[0] <= drf.currWordReg[0];
+               drf.currWordReg[1] <= drf.currWordReg[1];
+               drf.currWordReg[2] <= drf.currWordReg[2];
+               drf.currWordReg[3] <= drf.currWordReg[3];
               end               
                     
        end                
@@ -212,10 +382,25 @@ always_ff@(posedge dma_if.CLK)
           
           if(dma_if.RESET||drf.masterClear)
              drf.modeReg[drf.requestReg[1:0]] <= 16'b0;
-          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[drf.requestReg[1:0]])
-               drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];            
+//Mode Register 0
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[0])
+               drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];  
+//Mode Register 1
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[1])
+               drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];
+//Mode Register 2
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[2])
+               drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];
+//Mode Register 3
+          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} == MODEREGWRITE[3])
+               drf.modeReg[drf.ioDataBuf[1:0]] <= drf.ioDataBuf[7:2];          
           else 
-              drf.modeReg[drf.requestReg[1:0]] <=  drf.modeReg[drf.requestReg[1:0]] ;
+              begin
+              drf.modeReg[0] <=  drf.modeReg[0] ;
+              drf.modeReg[1] <=  drf.modeReg[1] ;
+              drf.modeReg[2] <=  drf.modeReg[2] ;
+              drf.modeReg[3] <=  drf.modeReg[3] ;
+              end
           end
                
 
