@@ -117,9 +117,9 @@ always_comb begin
 
 	    state[iSI]: begin cif.IDLE_CYCLE = 1'b1; cif.hrq = 1'b0;  end
 
-	    state[iS0]: begin cif.ACTIVE_CYCLE = 1'b1; cif.hrq = 1'b1; end
+	    state[iS0]: begin  cif.hrq = 1'b1; end
 				
-	    state[iS1]: begin cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
+	    state[iS1]: begin cif.ACTIVE_CYCLE = 1'b1; cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         
 	    state[iS2]: begin  cif.aen = 1'b1; cif.adstb = 1'b0; cif.checkRead = 1'b1; cif.hrq = 1'b1; cif.checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
 				
