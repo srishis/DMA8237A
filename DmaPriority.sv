@@ -3,7 +3,7 @@
 //-------------------------------------------------
 
 `include "DmaPackage.svh"
-module priorityTop(dma_if.DUT dif, dmaRegIf.PRIORITY rif); 
+module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif); 
 
 	import DmaPackage::*;
 	
