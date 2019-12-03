@@ -1,15 +1,16 @@
+`include "DmaPackage.svh"
 module dmaTimingControl(dma_if.DUT dif, dmaControlIf cif, dmaRegIf.FSM rif);
 
 import DmaPackage::*; 
 
 // Initial state condition
-always_ff @(posedge dif.CLK) state <= SI;
-else		             state <= nextstate;
+always_ff @(posedge dma_if.CLK) if(dma_if.RESET)  state <= SI;
+else		             			  state <= nextstate;
    
 // Program condition
 always_comb begin
-if(IDLE_CYCLE && !dif.CS_N && !dif.HLDA) cif.Program = 1; 
-else if(ACTIVE_CYCLE)			 cif.Program = 0;
+if(cif.IDLE_CYCLE && !dif.CS_N && !dif.HLDA) cif.Program = 1; 
+else if(cif.ACTIVE_CYCLE)			 cif.Program = 0;
 end
 
 // Write extend
@@ -35,6 +36,7 @@ if(cif.checkEOP )
 	if(rif.statusReg[3:0]) cif.eop = 1'b0;  
 	else		       cif.eop = 1'b1;
 else			       cif.eop = 1'b1;
+end
 
 // Next state logic
 always_comb begin   
@@ -44,37 +46,37 @@ always_comb begin
         unique case(1'b1)       // reverse case       
             state[iSI] :
 			begin
-			if(VALID_DREQ0 || VALID_DREQ1 || VALID_DREQ2 || VALID_DREQ3) 	nextstate = S0;
-			else  								nextstate = SI;
+			if(cif.VALID_DREQ0 || cif.VALID_DREQ1 || cif.VALID_DREQ2 || cif.VALID_DREQ3) 	nextstate = S0;
+			else  										nextstate = SI;
 			end
 			 
             state[iS0] :
 			begin
-			if(dif.HLDA) 							nextstate = S1;
-			else if(!dif.HLDA) 						nextstate = S0;
-			else if(!dif.EOP_N) 						nextstate = SI;
+			if(dif.HLDA) 									nextstate = S1;
+			else if(!dif.HLDA) 								nextstate = S0;
+			else if(!dif.EOP_N) 								nextstate = SI;
 			end
 			
             state[iS1] :
 			begin
-			if(!dif.EOP_N) 						        nextstate = SI;
-			else								nextstate = S2;
+			if(!dif.EOP_N) 						        		nextstate = SI;
+			else										nextstate = S2;
 			end
 			
             state[iS2] :  
                         begin
-			if(!dif.EOP_N) 						        nextstate = SI;
-                        else if(!cif.writeExtend)                                       nextstate = S4;   //if write extension not set next state will be S4 
-			else if(cif.writeExtend)					nextstate = S3;
+			if(!dif.EOP_N) 						          		nextstate = SI;
+                        else if(!cif.writeExtend)                                         		nextstate = S4;   
+			else if(cif.writeExtend)					  		nextstate = S3;
                         end
 
             state[iS3] :
                         begin
-			if(!dif.EOP_N) 						        nextstate = SI;
-			else								nextstate = S4;
+			if(!dif.EOP_N) 						        		nextstate = SI;
+			else										nextstate = S4;
                         end 
 			
-            state[iS4] :								nextstate = SI;
+            state[iS4] :										nextstate = SI;
  
 														
         endcase
@@ -84,15 +86,15 @@ end
 always_comb begin 
 
 // default values for control outputs
-{cif.aen, cif.adstb, cif.Program, ACTIVE_CYCLE, IDLE_CYCLE, cif.checkEOP, cif.checkReadWrite, cif.checkWriteExtend} = 8'b00000000;  
+{cif.aen, cif.adstb, cif.Program, cif.ACTIVE_CYCLE, cif.IDLE_CYCLE, cif.checkEOP, cif.checkReadWrite, cif.checkWriteExtend} = 8'b00000000;  
 {cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldtempCurrAddr, cif.ldtempCurrWord, cif.enCurrAddr, cif.enCurrWord, } = 6'b000000; 
 {cif.validDACK,  cif.writeExtend} = 2'b00;    		 
 
     unique case(1'b1)  // reverse case
 
-	    state[iSI]: begin IDLE_CYCLE = 1'b1; cif.hrq = 1'b1;  end
+	    state[iSI]: begin cif.IDLE_CYCLE = 1'b1; cif.hrq = 1'b1;  end
 
-	    state[iS0]: begin ACTIVE_CYCLE = 1'b1; cif.hrq = 1'b1; end
+	    state[iS0]: begin cif.ACTIVE_CYCLE = 1'b1; cif.hrq = 1'b1; end
 				
 	    state[iS1]: begin cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.enCurrWord = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         

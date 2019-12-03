@@ -1,5 +1,5 @@
 
-interface dma_if(input logic CLK, RESET)
+interface dma_if(input logic CLK, RESET);
 
 	// interface to 8086 processor
 	logic 	    MEMR_N;   		// memory read
@@ -50,13 +50,13 @@ interface dma_if(input logic CLK, RESET)
 	       	);
 
 	// TODO: modport for TB and other TB components (if any)
-	modport TB();
+	//modport TB();
 
-	// TODO: clocking block
-	clocking cb @(posedge CLK)
+	//// TODO: clocking block
+	//clocking cb @(posedge CLK);
 
 
-	endclocking
+	//endclocking
 
 	// TODO: tasks (if any)
 

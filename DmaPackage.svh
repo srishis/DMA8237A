@@ -79,7 +79,7 @@ enum logic [2:0] {
   	S2   = 6'b000001 << iS2, 
   	S3   = 6'b000001 << iS3, 
   	S4   = 6'b000001 << iS4 
-  	} state, next;
+  	} state, nextstate;
 
 
 endpackage

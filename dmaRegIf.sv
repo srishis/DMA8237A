@@ -24,16 +24,16 @@ modport FSM(
 	);
 
 modport REG(
-		output [15:0] currAddrReg[4],
-		output [15:0] currWordReg[4],
-		output [15:0] baseAddrReg[4],
-		output [15:0] baseWordReg[4],
-		output [5:0]  modeReg[4],
-		output [7:0]  commandReg,
-		output [7:0]  requestReg,
-		output [7:0]  maskReg,
-		output [7:0]  tempReg,
-		output [7:0]  statusReg	
+		output  currAddrReg,
+		output  currWordReg,
+		output  baseAddrReg,
+		output  baseWordReg,
+		output  modeReg,
+		output  commandReg,
+		output  requestReg,
+		output  maskReg,
+		output  tempReg,
+		output  statusReg	
 	);
 
 endinterface
