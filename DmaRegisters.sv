@@ -33,9 +33,9 @@ always_ff@(posedge dma_if.CLK)
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,drf.ioAddrBuf} <= WRITEBASECURRADDR[drf.requestReg[1:0]])
                   begin
                       if(drf.FF)    // when FF = 1, upper byte is loaded . when FF = 0, lower byte is loaded                               
-                        drf.baseAddrReg[drf.requestReg[1:0]][15:8] <= drf.writeBufReg;
+                        drf.baseAddrReg[drf.requestReg[1:0]][15:8] <= drf.writeBuf;
                       else
-                        drf.baseAddrReg[drf.requestReg[1:0]][7:0] <= drf.writeBufReg;
+                        drf.baseAddrReg[drf.requestReg[1:0]][7:0] <= drf.writeBuf;
                   end
 
           else
