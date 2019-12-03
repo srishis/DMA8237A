@@ -2,7 +2,26 @@
 module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
 
 import DmaPackage::*; 
-
+ // index for each state in the state register
+ enum logic [2:0] {
+  	iSI   = 0,
+  	iS0   = 1,
+  	iS1   = 2,
+  	iS2   = 3,
+  	iS3   = 4,
+  	iS4   = 5
+  } stateIndex;
+  
+  // declaration of fsm states onehot encoding
+ enum logic [5:0] {
+  	SI   = 6'b000001 << iSI, 
+  	S0   = 6'b000001 << iS0, 
+  	S1   = 6'b000001 << iS1, 
+  	S2   = 6'b000001 << iS2, 
+  	S3   = 6'b000001 << iS3, 
+  	S4   = 6'b000001 << iS4 
+  	} state, nextstate;
+	
 // Initial state condition
 always_ff @(posedge dma_if.CLK) if(dma_if.RESET)  state <= SI;
 else		             			  state <= nextstate;
