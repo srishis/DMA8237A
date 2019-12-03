@@ -1,4 +1,4 @@
-interface dmaControlIf(input logic CLK, RESET);
+interface DmaControlIf(input logic CLK, RESET);
 	
 // Datapath Buffers
 logic [3:0] ioAddrBuf;      
