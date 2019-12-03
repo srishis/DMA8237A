@@ -35,7 +35,7 @@ end
 // Write extend
 always_comb begin
 if(cif.checkWriteExtend)
-	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01)
+	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0)
 	       cif.writeExtend = 1'b1; //fsm read and extended write next state
 	else   cif.writeExtend = 1'b0;
 else	       cif.writeExtend = 1'b0;
@@ -46,7 +46,7 @@ always_comb begin
 	if(cif.checkWrite)
 	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
 		cif.iow = 1'b0; 
-	else    cif.iow = 1'b1;
+	else    cif.iow = 1'b1
 	else if(cif.checkRead)
 		if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
 		cif.ior = 1'b0;    
