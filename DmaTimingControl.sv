@@ -1,5 +1,5 @@
 `include "DmaPackage.svh"
-module dmaTimingControl(dma_if.DUT dif, dmaControlIf cif, dmaRegIf.FSM rif);
+module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
 
 import DmaPackage::*; 
 
