@@ -28,8 +28,8 @@ else		             			  state <= nextstate;
    
 // Program condition
 always_comb begin
-if(cif.IDLE_CYCLE && !dif.CS_N && !dif.HLDA) cif.Program = 1; 
-else if(cif.ACTIVE_CYCLE)			 cif.Program = 0;
+if(!dif.CS_N && !dif.HLDA) cif.Program = 1; 
+else if(dif.HLDA)			  cif.Program = 0;
 end
 
 // Write extend
@@ -43,10 +43,14 @@ end
 
 // Read or Write operation
 always_comb begin
-if(cif.checkReadWrite)
-	if(rif.modeReg[3:2] == 2'b01 && rif.commandReg[0] == 1'b0 && rif.commandReg[5] == 1'b1) cif.iow = 1'b0;    
-	else if(rif.modeReg[3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			cif.ior = 1'b0;    
-else    begin cif.iow = 1'b1; cif.ior = 1'b1; end
+	if(cif.checkWrite)
+	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
+		cif.iow = 1'b0; 
+	else    cif.iow = 1'b1;
+	else if(checkRead)
+		if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
+		cif.ior = 1'b0;    
+		else cif.ior = 1'b1; 
 end
 
 // End of process by terminal count 
@@ -106,23 +110,23 @@ always_comb begin
 
 // default values for control outputs
 {cif.aen, cif.adstb, cif.Program, cif.ACTIVE_CYCLE, cif.IDLE_CYCLE, cif.checkEOP, cif.checkReadWrite, cif.checkWriteExtend} = 8'b00000000;  
-{cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldtempCurrAddr, cif.ldtempCurrWord, cif.enCurrAddr, cif.enCurrWord, } = 6'b000000; 
+{cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 6'b000000; 
 {cif.validDACK,  cif.writeExtend} = 2'b00;    		 
 
     unique case(1'b1)  // reverse case
 
-	    state[iSI]: begin cif.IDLE_CYCLE = 1'b1; cif.hrq = 1'b1;  end
+	    state[iSI]: begin cif.IDLE_CYCLE = 1'b1; cif.hrq = 1'b0;  end
 
 	    state[iS0]: begin cif.ACTIVE_CYCLE = 1'b1; cif.hrq = 1'b1; end
 				
-	    state[iS1]: begin cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.enCurrWord = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
+	    state[iS1]: begin cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         
-	    state[iS2]: begin  cif.aen = 1'b1; cif.adstb = 1'b0; cif.checkReadWrite = 1'b1; cif.hrq = 1'b1; cif.checkWriteExtend = 1'b1; end
+	    state[iS2]: begin  cif.aen = 1'b1; cif.adstb = 1'b0; cif.checkRead = 1'b1; cif.hrq = 1'b1; cif.checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
 				
 
-	    state[iS3]: begin cif.aen = 1'b1; cif.checkReadWrite = 1'b1; cif.hrq = 1'b1; end
+	    state[iS3]: begin cif.aen = 1'b1; cif.checkWrite = 1'b1; cif.hrq = 1'b1; end
 		
-	    state[iS4]: begin  cif.ldtempCurrAddr= 1'b1; cif.ldtempCurrWord = 1'b1; cif.validDACK = 1'b0;
+	    state[iS4]: begin  cif.ldTempCurrAddr= 1'b0; cif.ldTempCurrWord = 1'b0; cif.validDACK = 1'b0;
 			       cif.checkEOP = 1'b1; {cif.hrq, cif.aen} = 2'b00;
 			end
 					
