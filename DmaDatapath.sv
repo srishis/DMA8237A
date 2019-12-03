@@ -1,7 +1,7 @@
 
 module DmaDatapath(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf dpf);
 
-import DmaPackage::*;
+//import DmaPackage::*;
 
 // Data bus logic
 
