@@ -1,9 +1,4 @@
-interface dmaControlIf(input logic CLK, RESET);
-	
-// Datapath Buffers
-logic [3:0] ioAddrBuf;      
-logic [3:0] outAddrBuf;      
-logic [7:0] ioDataBuf;      
+interface DmaControlIf(input logic CLK, RESET);
 
 // FSM control outputs
 logic eop;		//@Janisha: FSM output in S1-S4 state
