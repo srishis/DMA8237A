@@ -1,5 +1,5 @@
 
-module DmaDatapath(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf dpf);
+module DmaDatapath(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.DATAPATH dpf);
 
 //import DmaPackage::*;
 
