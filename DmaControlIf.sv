@@ -68,13 +68,13 @@ logic VALID_DACK0;
 logic VALID_DACK1;
 logic VALID_DACK2;
 logic VALID_DACK3;
-logic CH0_PRIORITY; 
-logic CH1_PRIORITY;  
-logic CH2_PRIORITY; 
-logic CH3_PRIORITY; 
-logic NEXT_CH0_PRIORITY;
-logic NEXT_CH1_PRIORITY;
-logic NEXT_CH2_PRIORITY;
-logic NEXT_CH3_PRIORITY; 
+logic [1:0] CH0_PRIORITY; 
+logic [1:0] CH1_PRIORITY;  
+logic [1:0] CH2_PRIORITY; 
+logic [1:0] CH3_PRIORITY; 
+logic [1:0] NEXT_CH0_PRIORITY;
+logic [1:0] NEXT_CH1_PRIORITY;
+logic [1:0] NEXT_CH2_PRIORITY;
+logic [1:0] NEXT_CH3_PRIORITY; 
 
 endinterface
