@@ -32,25 +32,22 @@ if(!dif.CS_N && !dif.HLDA)           cif.Program = 1;
 else if(dif.HLDA)		     cif.Program = 0;
 end
 
-// Write extend
+// Write extend & Read or Write operation
 always_comb begin
 if(cif.checkWriteExtend)
 	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0)
-	       cif.iow = 1'b0; //fsm read and extended write next state
-	else   cif.iow = 1'b1;
-else	       cif.iow = 1'b1;
-end
+	       cif.iow = 1'b0; 
+	else   cif.iow = 1'b1;	       
 
-// Read or Write operation
-always_comb begin
-	if(cif.checkWrite)
+elseif(cif.checkWrite)
 	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
 		cif.iow = 1'b0; 
 	else    cif.iow = 1'b1;
-	else if(cif.checkRead)
-		if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
+	
+else if(cif.checkRead)
+	if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
 		cif.ior = 1'b0;    
-		else cif.ior = 1'b1; 
+	else    cif.ior = 1'b1; 
 end
 
 // End of process by terminal count 
