@@ -23,13 +23,13 @@ module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif)
   	} state, nextstate;
 	
 // Initial state condition
-always_ff @(posedge dma_if.CLK) if(dma_if.RESET)  state <= SI;
-else		             			  state <= nextstate;
+always_ff @(posedge dma_if.CLK)    if(dma_if.RESET && dif.CS_N)  state <= SI;
+else		             			                 state <= nextstate;
    
 // Program condition
 always_comb begin
-if(!dif.CS_N && !dif.HLDA) cif.Program = 1; 
-else if(dif.HLDA)			  cif.Program = 0;
+if(!dif.CS_N && !dif.HLDA)           cif.Program = 1; 
+else if(dif.HLDA)		     cif.Program = 0;
 end
 
 // Write extend
