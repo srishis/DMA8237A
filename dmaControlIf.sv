@@ -6,11 +6,11 @@ logic [3:0] outAddrBuf;
 logic [7:0] ioDataBuf;      
 
 // FSM control outputs
-logic eop;		//@Janisha: FSM output in S1-S4 state
-logic aen;		//@Janisha: FSM output in S1 state
-logic adstb;		//@Janisha: FSM output in S1 state
-logic ior;		//@Janisha: FSM output in S1-S4 state
-logic iow;		//@Janisha: FSM output in S1-S4 state
+logic eop;		
+logic aen;		
+logic adstb;		
+logic ior;		
+logic iow;		
 logic hrq;
 logic validDACK;
 logic writeExtend;
@@ -26,18 +26,6 @@ logic ldtempCurrAddr;
 logic ldtempCurrWord; 
 logic Program; 
 
-
-//modport DATAPATH(
-//		inout ioAddrBuf,
-//		inout ioDataBuf,
-//		output outAddrBuf
-//);
-//
-//modport REG(
-//		inout ioAddrBuf,
-//		inout ioDataBuf,
-//		output outAddrBuf
-//);
 logic IDLE_CYCLE;	       
 logic ACTIVE_CYCLE;	 	
 logic DREQ0_ACTIVE_HIGH; 
@@ -72,13 +60,13 @@ logic VALID_DACK0;
 logic VALID_DACK1;
 logic VALID_DACK2;
 logic VALID_DACK3;
-logic CH0_PRIORITY; 
-logic CH1_PRIORITY;  
-logic CH2_PRIORITY; 
-logic CH3_PRIORITY; 
-logic NEXT_CH0_PRIORITY;
-logic NEXT_CH1_PRIORITY;
-logic NEXT_CH2_PRIORITY;
-logic NEXT_CH3_PRIORITY; 
+logic [1:0] CH0_PRIORITY; 
+logic [1:0] CH1_PRIORITY;  
+logic [1:0] CH2_PRIORITY; 
+logic [1:0] CH3_PRIORITY; 
+logic [1:0] NEXT_CH0_PRIORITY;
+logic [1:0] NEXT_CH1_PRIORITY;
+logic [1:0] NEXT_CH2_PRIORITY;
+logic [1:0] NEXT_CH3_PRIORITY; 
 
 endinterface
