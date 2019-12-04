@@ -1,5 +1,8 @@
-interface dmaRegIf(input logic CLK ,RESET);
+interface DmaDatapathIf(input logic CLK ,RESET);
 
+// Read Write Buffers
+logic [7:0] readBuf;
+logic [7:0] writeBuf; 
 logic [15:0] currAddrReg[4];
 logic [15:0] currWordReg[4];
 logic [15:0] baseAddrReg[4];
@@ -12,6 +15,8 @@ logic [7:0]  tempReg;
 logic [7:0]  tempAddrReg;
 logic [7:0]  tempWordReg;
 logic [7:0]  statusReg;
+logic masterClear;
+logic FF;
 
 modport PRIORITY(
 		input commandReg,
@@ -25,7 +30,11 @@ modport FSM(
 		input statusReg	
 	);
 
-modport REG(
+modport REG(	
+		inout readBuf,
+		inout writeBuf,
+		output masterClear,
+		output FF,
 		output  currAddrReg,
 		output  currWordReg,
 		output  baseAddrReg,
