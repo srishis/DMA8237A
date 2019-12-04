@@ -1,4 +1,4 @@
-module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif, DmaControlIf.PR cif); 
+module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif); 
 
 	
 	logic validDREQ; 
