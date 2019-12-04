@@ -27,7 +27,7 @@ modport TC(
 modport PR(
  input commandReg,
  input requestReg,
- input maskReg,
+ input maskReg
 )
 
 endinterface
