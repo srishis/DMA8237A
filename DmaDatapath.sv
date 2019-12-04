@@ -1,6 +1,6 @@
 // DMA Data path module with register definitions
 
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, DmaRegIf.DP rif);
+module DmaDatapath(dma_if.DP dif, DmaControlIf.DP  DmaRegIf.DP rif);
 
 // internal registers
 logic [15:0] currAddrReg[4];
@@ -11,6 +11,7 @@ logic [7:0]  tempReg;
 logic [7:0]  tempAddrReg;
 logic [7:0]  tempWordReg;
 
+logic TC[4];
 
 // Datapath Buffers
 logic [3:0] ioAddrBuf;      
@@ -180,12 +181,12 @@ always_ff@(posedge dif.CLK)
                   currAddrReg[3] <= '0;
              end
 //When TC is reached and the auto initialization is disabled, the value to be set to zero
-            else if ((cif.TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
+            else if ((TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
                 begin    
                   currAddrReg[rif.requestReg[1:0]] <= '0;
                 end
 //When TC is reached and the auto initialization is enabled, the value to be re-initialised from the base registers
-          else if ((cif.TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))        
+          else if ((TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))        
                 begin  
                   currAddrReg[rif.requestReg[1:0]] <= baseAddrReg[rif.requestReg[1:0]]; 
                 end
@@ -283,12 +284,12 @@ always_ff@(posedge dif.CLK)
                currWordReg[3] <= '0; 
             end 
        
-          else if((cif.TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
+          else if((TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
              begin
                currWordReg[rif.requestReg[1:0]] <= '0;
              end
 
-          else if((cif.TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))
+          else if((TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))
              begin
                  currWordReg[rif.requestReg[1:0]] <= baseWordReg[rif.requestReg[1:0]];
              end
@@ -412,7 +413,7 @@ always_ff@(posedge dif.CLK)
                end
            if(tempWordReg ==0)
              begin
-              cif.TC[rif.requestReg[1:0]] <= 1;
+              TC[rif.requestReg[1:0]] <= 1;
               tempWordReg <= 16'b1111111111111111;
              end
             else
@@ -424,7 +425,7 @@ always_ff@(posedge dif.CLK)
  
 
 // Mode Register
-// Programmed by the CPU
+// cif.Programmed by the CPU
 
 always_ff@(posedge dif.CLK)
           begin
@@ -526,14 +527,14 @@ always_ff@(posedge dif.CLK)
 always_ff@(posedge dif.CLK)
         begin
 
-                 rif.statusReg[0] <= (cif.TC[0])?1'b1:1'b0;
-                 rif.statusReg[1] <= (cif.TC[1])?1'b1:1'b0;
-                 rif.statusReg[2] <= (cif.TC[2])?1'b1:1'b0;
-                 rif.statusReg[3] <= (cif.TC[3])?1'b1:1'b0;  
-                 rif.statusReg[4] <= (cif.valid_DREQ[0])?1'b1:1'b0;  
-                 rif.statusReg[5] <= (cif.valid_DREQ[1])?1'b1:1'b0; 
-                 rif.statusReg[6] <= (cif.valid_DREQ[2])?1'b1:1'b0; 
-                 rif.statusReg[7] <= (cif.valid_DREQ[3])?1'b1:1'b0; 
+                 rif.statusReg[0] <= (TC[0])?1'b1:1'b0;
+                 rif.statusReg[1] <= (TC[1])?1'b1:1'b0;
+                 rif.statusReg[2] <= (TC[2])?1'b1:1'b0;
+                 rif.statusReg[3] <= (TC[3])?1'b1:1'b0;  
+                 rif.statusReg[4] <= (cif.VALID_DREQ[0])?1'b1:1'b0;  
+                 rif.statusReg[5] <= (cif.VALID_DREQ[1])?1'b1:1'b0; 
+                 rif.statusReg[6] <= (cif.VALID_DREQ[2])?1'b1:1'b0; 
+                 rif.statusReg[7] <= (cif.VALID_DREQ[3])?1'b1:1'b0; 
 
           if(dif.RESET||masterClear)
              rif.statusReg <= '0;
