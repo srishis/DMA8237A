@@ -384,7 +384,7 @@ always_ff@(posedge dma_if.CLK)
             else if(cif.ldCurrAddrTemp)     //to load the current address into temporary register and then increment or decrement
                     begin   
                       tempAddrReg <= currAddrReg[rif.requestReg[1:0]];
-                      {outAddrBuf,ioAddrBuf} = currWordReg[7:0];
+                      {outAddrBuf,ioAddrBuf} = currWordReg[rif.requestReg[1:0]][7:0];
                       if(rif.modeReg[5] == 0)
                           tempAddrReg <= tempAddrReg  + 16'b0000000000000001;
                       else
