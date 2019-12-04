@@ -1,11 +1,11 @@
 // DMA Top module
 
-module Dma8237aTop(dma_if dif, input logic CLK, input logic RESET);
+module Dma8237aTop(dma_if dif);
 
 
 // DMA interface instantiation
-DmaControlIf cif(CLK, RESET);
-DmaRegIf rif(CLK, RESET);
+DmaControlIf cif(dif.CLK, dif.RESET);
+DmaRegIf rif(dif.CLK, dif.RESET);
 
 // DMA modules instantiation
 // Datapath module
