@@ -48,11 +48,11 @@ interface dma_if(input logic CLK, RESET);
 	
 	// modport for Datapath
 	modport DP(
-			inout  IOR_N,
-			inout  IOW_N,
+			input  IOR_N,
+			input  IOW_N,
+			input  CS_N,
 			inout  DB,
 			inout  ADDR_L,
-			inout  EOP_N,
 			output ADDR_U,
 			output AEN,
 			output ADSTB
