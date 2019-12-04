@@ -1,7 +1,6 @@
 // DMA Data path module with register definitions
 
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, modeReg, 
-		   commandReg, requestReg, maskReg);
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif, modeReg, commandReg, requestReg, maskReg);
 
 // DMA Registers
 output [5:0]  modeReg[4];
