@@ -65,7 +65,7 @@ logic ldtempCurrWord;
   always_comb dif.ADSTB <= adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched
 
 // Initial state condition
-always_ff @(posedge dma_if.CLK)    if(dma_if.RESET || !dif.CS_N)  state <= SI;
+always_ff @(posedge dif.CLK)    if(dif.RESET || !dif.CS_N)  state <= SI;
 else		             			                  state <= nextstate;
    
 // TODO: Try to remove HLDA for Program condition
