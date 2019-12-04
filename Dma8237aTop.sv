@@ -20,7 +20,8 @@ DmaDatapath D1(
 		modeReg,
 		commandReg,
 		requestReg,
-		maskReg
+		maskReg,
+		statusReg
 );
 	
 	
@@ -28,17 +29,19 @@ DmaDatapath D1(
 DmaTimingControl C1(
 		     dif.TC, 
 		     cif, 
-		     modeReg,
 		     commandReg,
+		     modeReg,
 		     statusReg
 );
 
 // Priority logic
 DmaPriority P1(
-		dif.PR, 
-		commandReg,
+		dif.PR,
 		requestReg,
-		maskReg
+		maskReg,
+		commandReg
+		
+		
 );
 
 
