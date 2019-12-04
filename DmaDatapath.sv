@@ -16,7 +16,7 @@ module DmaDatapath(dma_if.DUT dif, DmaControlIf cif);
 
 // EOP logic
 // pullup resistor logic
-  always_comb (pull0, pull1) dif.EOP_N = '1;
+  assign (pull0, pull1) dif.EOP_N = '1;
   always_comb dif.EOP_N = (cif.ACTIVE_CYCLE) ? cif.eop : 1'bz;
 
 // AEN & ADSTB functionality
