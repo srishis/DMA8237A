@@ -25,8 +25,8 @@ modport DP(
 	    input ldCurrWordTemp, 
 	    input enCurrAddr, 
 	    input enCurrWord, 
-	    input ldtempCurrAddr, 
-	    input ldtempCurrWord, 
+	    input ldTempCurrAddr, 
+	    input ldTempCurrWord, 
 	    input Program
 );
 
