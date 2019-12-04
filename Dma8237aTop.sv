@@ -1,6 +1,6 @@
 // DMA Top module
 
-module Dma8237aTop(dma_if.DUT dif, input logic CLK, RESET);
+module Dma8237aTop(dma_if dif, input logic CLK, RESET);
 
 
 // DMA interface instantiation
