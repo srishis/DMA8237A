@@ -2,11 +2,10 @@
 module DmaDatapath(dma_if.DP dif, DmaControlIf cif);
 
 // Data bus logic
-  always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE && !dif.IOW_N) cif.ioDataBuf <= dif.DB;  // @Srini: CPU send register programming during IO Write in IDLE_CYCLE 
+  always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE && !dif.IOW_N) cif.ioDataBuf <= dif.DB;   
 
 // Databus DB as output 
-  always_comb dif.DB = (cif.IDLE_CYCLE && ~dif.IOR_N) ? cif.ioDataBuf : 8'bz;  // @Srini: CPU reads data from registers so write data from registers to be driven on DB lines in ioDataBuf
-
+  always_comb dif.DB = (cif.IDLE_CYCLE && ~dif.IOR_N) ? cif.ioDataBuf : 8'bz;
 // IO Read logic
   always_comb dif.IOR_N = (cif.ACTIVE_CYCLE) ? cif.ior : 1'bz; // access data from peripheral during DMA write transfer
 
