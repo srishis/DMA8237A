@@ -122,25 +122,25 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif, DmaControlIf.PR cif);
 
 	// DACK output 
 	always_ff@(posedge dif.CLK) begin
-		if(validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH) 	    	dif.DACK[0] <= 1;
-		else if(validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)       dif.DACK[0] <= 0;
-		else if(!validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH)     dif.DACK[0] <= 0;
-		else if(!validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)      dif.DACK[0] <= 1;
+		if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH) 	    	dif.DACK[0] <= 1;
+		else if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)       dif.DACK[0] <= 0;
+		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH)     dif.DACK[0] <= 0;
+		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)      dif.DACK[0] <= 1;
 
-		if(validDACK && VALID_DACK1 && DACK1_ACTIVE_HIGH) 	    	dif.DACK[1] <= 1;
-		else if(validDACK && VALID_DACK1 && DACK1_ACTIVE_LOW)       dif.DACK[1] <= 0;
-		else if(!validDACK && VALID_DACK1 && DACK0_ACTIVE_HIGH)     dif.DACK[1] <= 0;
-		else if(!validDACK && VALID_DACK1 && DACK0_ACTIVE_LOW)      dif.DACK[1] <= 1;
+		if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_HIGH) 	    	dif.DACK[1] <= 1;
+		else if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_LOW)       dif.DACK[1] <= 0;
+		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_HIGH)     dif.DACK[1] <= 0;
+		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_LOW)      dif.DACK[1] <= 1;
 
-		if(validDACK && VALID_DACK2 && DACK2_ACTIVE_HIGH) 	    	dif.DACK[2] <= 1;
-		else if(validDACK && VALID_DACK2 && DACK2_ACTIVE_LOW)       dif.DACK[2] <= 0;
-		else if(!validDACK && VALID_DACK2 && DACK0_ACTIVE_HIGH)     dif.DACK[2] <= 0;
-		else if(!validDACK && VALID_DACK2 && DACK0_ACTIVE_LOW)      dif.DACK[2] <= 1;
+		if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_HIGH) 	    	dif.DACK[2] <= 1;
+		else if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_LOW)       dif.DACK[2] <= 0;
+		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_HIGH)     dif.DACK[2] <= 0;
+		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_LOW)      dif.DACK[2] <= 1;
 
-		if(validDACK && VALID_DACK3 && DACK3_ACTIVE_HIGH) 	    	dif.DACK[3] <= 1;
-		else if(validDACK && VALID_DACK3 && DACK3_ACTIVE_LOW)       dif.DACK[3] <= 0;
-		else if(!validDACK && VALID_DACK3 && DACK0_ACTIVE_HIGH)     dif.DACK[3] <= 0;
-		else if(!validDACK && VALID_DACK3 && DACK0_ACTIVE_LOW)      dif.DACK[3] <= 1;
+		if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_HIGH) 	    	dif.DACK[3] <= 1;
+		else if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_LOW)       dif.DACK[3] <= 0;
+		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_HIGH)     dif.DACK[3] <= 0;
+		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_LOW)      dif.DACK[3] <= 1;
 	end
 	
 	// check for any valid requests on DREQ lines	
@@ -150,7 +150,7 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif, DmaControlIf.PR cif);
 	end
 
 	// HRQ output
-	always_comb dif.HRQ = cif.hrq;
+	always_comb dif.HRQ = hrq;
 
 	// select priority encoding
 	always_comb begin
@@ -200,4 +200,3 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif, DmaControlIf.PR cif);
 		
 
 endmodule
-
