@@ -10,7 +10,7 @@ DmaRegIf rif(CLK, RESET);
 // DMA modules instantiation
 // Datapath module
 DmaDatapath D1(
-		dp_if.DP, 
+		dif.DP, 
 		cif, 
 		rif.DP
 );
