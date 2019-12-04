@@ -16,10 +16,10 @@ logic [7:0]  maskReg;
 DmaDatapath D1(
 		dp_if.DP, 
 		cif, 
-		.modeReg(modeReg), 
-		.commandReg(commandReg),
-		.requestReg(requestReg),
-		.maskReg(maskReg)
+		modeReg,
+		commandReg,
+		requestReg,
+		maskReg
 );
 	
 	
@@ -27,16 +27,17 @@ DmaDatapath D1(
 DmaTimingControl C1(
 		     dif.TC, 
 		     cif, 
-		     .modeReg(modeReg), 
-		     .commandReg(commandReg)
+		     modeReg,
+		     commandReg
 );
 
 // Priority logic
 DmaPriority P1(
 		dif.PR, 
-		.commandReg(commandReg),
-		.requestReg(requestReg),
-		.maskReg(maskReg)
+		commandReg,
+		requestReg,
+		maskReg
 );
+
 
 endmodule
