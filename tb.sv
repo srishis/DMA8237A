@@ -4,7 +4,7 @@ module top;
 bit CLK, RESET;
 dma_if dif(CLK, RESET);
 	
-Dma8237aTop(dif.DUT);
+Dma8237aTop DMT (dif.DUT);
 
 // CLock
 initial #10 forever  CLK = ~CLK; 
