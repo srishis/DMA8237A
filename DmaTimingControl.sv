@@ -63,18 +63,18 @@ end
 always_comb begin
 if(cif.checkWriteExtend)
 	if (commandReg[5] == 1'b1 && modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0)
-	       cif.iow = 1'b0; 
-	else   cif.iow = 1'b1;	       
+		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
+	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
 
 else if(cif.checkWrite)
 	if(modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0) 
-		cif.iow = 1'b0; 
-	else    cif.iow = 1'b1;
+		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
+	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
 	
 else if(cif.checkRead)
 	if(modeReg[0][3:2] == 2'b10 || modeReg[1][3:2] == 2'b10 || modeReg[2][3:2] == 2'b10 || modeReg[3][3:2] == 2'b10 && commandReg[0] == 1'b0)    			
-		cif.ior = 1'b0;    
-	else    cif.ior = 1'b1; 
+		begin cif.memr = 1'b0; cif.iow = 1'b0; end   
+	else    begin cif.memr = 1'b1; cif.iow = 1'b1; end   
 end
 
 // End of process by terminal count 
@@ -157,3 +157,4 @@ cif.validDACK = 1'b0;
 end
 				 
 endmodule
+
