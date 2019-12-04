@@ -28,6 +28,6 @@ modport PR(
  input commandReg,
  input requestReg,
  input maskReg
-)
+);
 
 endinterface
