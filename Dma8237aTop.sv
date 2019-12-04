@@ -1,7 +1,7 @@
 // DMA Top module
 
 `timescale 100ns/10ns
-module dma_8237A;
+module Dma8237aTop;
 
 parameter CLK_PERIOD = 200;
 parameter CLK_CYCLES = 20;
