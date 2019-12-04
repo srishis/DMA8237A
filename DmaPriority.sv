@@ -150,7 +150,7 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 	end
 
 	// HRQ output
-	always_comb dif.HRQ = hrq;
+	always_comb dif.HRQ = cif.hrq;
 
 	// select priority encoding
 	always_comb begin
