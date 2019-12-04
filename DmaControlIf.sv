@@ -5,8 +5,8 @@ logic ldCurrAddrTemp;
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
 logic enCurrWord; 
-logic ldtempCurrAddr; 
-logic ldtempCurrWord; 
+logic ldTempCurrAddr; 
+logic ldTempCurrWord; 
 logic Program;
 logic validDACK;
 
@@ -40,8 +40,8 @@ modport TC(
 	    output ldCurrWordTemp, 
 	    output enCurrAddr, 
 	    output enCurrWord, 
-	    output ldtempCurrAddr, 
-	    output ldtempCurrWord, 
+	    output ldTempCurrAddr, 
+	    output ldTempCurrWord, 
 	    output Program,
 	    output validDACK
 );
