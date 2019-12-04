@@ -24,7 +24,9 @@ logic enCurrAddr;
 logic enCurrWord; 
 logic ldtempCurrAddr; 
 logic ldtempCurrWord; 
-logic Program; 
+logic Program;
+logic masterClear;
+logic TC[4];
 
 logic IDLE_CYCLE;	       
 logic ACTIVE_CYCLE;	 	
