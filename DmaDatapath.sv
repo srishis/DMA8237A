@@ -2,7 +2,6 @@
 module DmaDatapath(dma_if.DUT dif, DmaControlIf cif);
 
 // Data bus logic
-// Databus DB as input 
   always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE && !dif.IOW_N) cif.ioDataBuf <= dif.DB;  // @Srini: CPU send register programming during IO Write in IDLE_CYCLE 
 
 // Databus DB as output 
@@ -17,19 +16,17 @@ module DmaDatapath(dma_if.DUT dif, DmaControlIf cif);
 
 // EOP logic
 // pullup resistor logic
-assign (pull0, pull1) dif.EOP_N = '1;
-  
- always_comb dif.EOP_N = (cif.ACTIVE_CYCLE) ? cif.eop : 1'bz;
+  always_comb (pull0, pull1) dif.EOP_N = '1;
+  always_comb dif.EOP_N = (cif.ACTIVE_CYCLE) ? cif.eop : 1'bz;
 
 // AEN & ADSTB functionality
-always_comb dif.AEN <= cif.aen; 
-always_comb dif.ADSTB <= cif.adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched 
- 
+  always_comb dif.AEN <= cif.aen; 
+  always_comb dif.ADSTB <= cif.adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched 
 
 // Address Bus logic
 
-  always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE) cif.ioAddrBuf <= dif.ADDR_L;  // @Srini: ioAddrBuf holds the read address of the register to be accessed by CPU in program condition
-  always_comb dif.ADDR_U = (cif.ACTIVE_CYCLE) ? cif.outAddrBuf : 4'bz;  // @Srini: write to outAddrBuf upper 4 bits of output address from TEMP ADDRESS REGISTER and this register gets the address from dif.DB lines 
-  always_comb dif.ADDR_L = (cif.ACTIVE_CYCLE) ? cif.ioAddrBuf : 4'bz;   //  @Srini: write to ioAddrBuf lower 4 bits of address output from TEMP ADDRESS REGISTER and this register gets the address from dif.DB lines
+  always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE) cif.ioAddrBuf <= dif.ADDR_L;  
+  always_comb dif.ADDR_U = (cif.ACTIVE_CYCLE) ? cif.outAddrBuf : 4'bz;  
+  always_comb dif.ADDR_L = (cif.ACTIVE_CYCLE) ? cif.ioAddrBuf : 4'bz;
 
 endmodule
