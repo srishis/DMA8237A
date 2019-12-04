@@ -281,7 +281,7 @@ always_ff@(posedge dma_if.CLK)
 always_ff@(posedge dma_if.CLK)
       begin
  
-          if(RESET||masterClear)
+	      if(dma_if.RESET||masterClear)
             begin
                currWordReg[0] <= '0; 
                currWordReg[1] <= '0; 
