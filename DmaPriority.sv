@@ -72,7 +72,7 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif);
 	end
 	
 	// Valid DREQ
-	always_ff@(posedge dma_if.CLK) begin
+	always_ff@(posedge dif.CLK) begin
 		if((cif.DREQ0_ACTIVE_HIGH && dif.DREQ[0]) || (cif.DREQ0_ACTIVE_LOW  && !dif.DREQ[0]))   cif.VALID_DREQ0 <= 1;
 		else					  					        cif.VALID_DREQ0 <= 0;	
 		if((cif.DREQ0_ACTIVE_HIGH && dif.DREQ[1]) || (cif.DREQ0_ACTIVE_LOW  && !dif.DREQ[1]))   cif.VALID_DREQ1 <= 1;
@@ -84,7 +84,7 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif);
 	end
 
 	// DACK output 
-	always_ff@(posedge dma_if.CLK) begin
+	always_ff@(posedge dif.CLK) begin
 		if(cif.validDACK && cif.VALID_DACK0 && cif.DACK0_ACTIVE_HIGH) 	    	dif.DACK[0] <= 1;
 		else if(cif.validDACK && cif.VALID_DACK0 && cif.DACK0_ACTIVE_LOW)       dif.DACK[0] <= 0;
 		else if(!cif.validDACK && cif.VALID_DACK0 && cif.DACK0_ACTIVE_HIGH)     dif.DACK[0] <= 0;
@@ -148,12 +148,12 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif);
 
 	
 	// Rotating priority logic 
-	always_ff@(posedge dma_if.CLK) begin
-		if(dma_if.RESET) {cif.CH0_PRIORITY, cif.CH1_PRIORITY, cif.CH2_PRIORITY, cif.CH3_PRIORITY} <= {8'b11100100}; // by default cif.CH0 - highest and cif.CH3 - lowest priority
+	always_ff@(posedge dif.CLK) begin
+		if(dif.RESET) {cif.CH0_PRIORITY, cif.CH1_PRIORITY, cif.CH2_PRIORITY, cif.CH3_PRIORITY} <= {8'b11100100}; // by default cif.CH0 - highest and cif.CH3 - lowest priority
 		else {cif.CH0_PRIORITY, cif.CH1_PRIORITY, cif.CH2_PRIORITY, cif.CH3_PRIORITY} <= {cif.NEXT_CH0_PRIORITY, cif.NEXT_CH1_PRIORITY, cif.NEXT_CH2_PRIORITY, cif.NEXT_CH3_PRIORITY};
 	end
 
-	always_ff@(posedge dma_if.CLK) begin
+	always_ff@(posedge dif.CLK) begin
 		if(cif.VALID_DREQ0)      begin cif.NEXT_CH0_PRIORITY <= 2'b00; cif.NEXT_CH1_PRIORITY <= cif.CH1_PRIORITY + 1'b1; cif.NEXT_CH2_PRIORITY <=  cif.CH2_PRIORITY + 1'b1; cif.NEXT_CH3_PRIORITY <=  cif.CH3_PRIORITY + 1'b1; end
 		else if(cif.VALID_DREQ1) begin cif.NEXT_CH1_PRIORITY <= 2'b00; cif.NEXT_CH0_PRIORITY <= cif.CH0_PRIORITY + 1'b1; cif.NEXT_CH2_PRIORITY <=  cif.CH2_PRIORITY + 1'b1; cif.NEXT_CH3_PRIORITY <=  cif.CH3_PRIORITY + 1'b1; end
 		else if(cif.VALID_DREQ2) begin cif.NEXT_CH2_PRIORITY <= 2'b00; cif.NEXT_CH0_PRIORITY <= cif.CH0_PRIORITY + 1'b1; cif.NEXT_CH2_PRIORITY <=  cif.CH2_PRIORITY + 1'b1; cif.NEXT_CH3_PRIORITY <=  cif.CH3_PRIORITY + 1'b1; end
@@ -163,4 +163,3 @@ module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif);
 		
 
 endmodule
-
