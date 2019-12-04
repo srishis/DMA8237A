@@ -2,10 +2,10 @@
 
 module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, commandReg, modeReg);
 
-// registers as inputs from Data path
 input logic [7:0] commandReg;
 input logic [5:0] modeReg[4];
 	
+
  // index for each state in the state register
  enum logic [2:0] {
   	iSI   = 0,
@@ -62,17 +62,17 @@ end
 // Write extend & Read or Write operation
 always_comb begin
 if(cif.checkWriteExtend)
-	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0)
+	if (commandReg[5] == 1'b1 && modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0)
 	       cif.iow = 1'b0; 
 	else   cif.iow = 1'b1;	       
 
 else if(cif.checkWrite)
-	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
+	if(modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0) 
 		cif.iow = 1'b0; 
 	else    cif.iow = 1'b1;
 	
 else if(cif.checkRead)
-	if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
+	if(modeReg[0][3:2] == 2'b10 || modeReg[1][3:2] == 2'b10 || modeReg[2][3:2] == 2'b10 || modeReg[3][3:2] == 2'b10 && commandReg[0] == 1'b0)    			
 		cif.ior = 1'b0;    
 	else    cif.ior = 1'b1; 
 end
@@ -80,7 +80,7 @@ end
 // End of process by terminal count 
 always_comb begin
 if(cif.checkEOP )
-	if(rif.statusReg[3:0]) cif.eop = 1'b0;  
+	if(statusReg[3:0]) cif.eop = 1'b0;  
 	else		       cif.eop = 1'b1;
 else			       cif.eop = 1'b1;
 end
@@ -157,4 +157,3 @@ cif.validDACK = 1'b0;
 end
 				 
 endmodule
-
