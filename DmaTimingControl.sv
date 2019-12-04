@@ -1,7 +1,7 @@
 // DMA Timing Control module
 
 module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
-
+	
 
  // index for each state in the state register
  enum logic [2:0] {
@@ -23,11 +23,34 @@ module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
   	S4   = 6'b000001 << iS4 
   	} state, nextstate;
 	
+// IO Read logic
+  always_comb dif.IOR_N = (dif.CS_N) ? cif.ior : 1'bz; // access data from peripheral during DMA write transfer
+
+// IO Write logic
+
+  always_comb dif.IOW_N = (dif.CS_N) ? cif.iow : 1'bz; // load data to peripheral during DMA read transfer
+
+// MEM Read logic
+  always_comb dif.MEMR_N = (dif.CS_N) ? cif.memr : 1'bz; // access data from peripheral during DMA write transfer
+
+// MEM Write logic
+
+  always_comb dif.MEMW_N = (dif.CS_N) ? cif.memw : 1'bz; // load data to peripheral during DMA read transfer
+
+// EOP logic
+  assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
+  always_comb dif.EOP_N = (dif.CS_N) ? cif.eop : 1'bz;
+
+// AEN & ADSTB functionality
+  always_comb dif.AEN <= cif.aen; 
+  always_comb dif.ADSTB <= cif.adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched
+
 // Initial state condition
-always_ff @(posedge dma_if.CLK)    if(dma_if.RESET || dif.CS_N)  state <= SI;
-else		             			                 state <= nextstate;
+always_ff @(posedge dma_if.CLK)    if(dma_if.RESET || !dif.CS_N)  state <= SI;
+else		             			                  state <= nextstate;
    
-// Program condition
+// TODO: Try to remove HLDA for Program condition
+// Program bit for DMA registers
 always_comb begin
 if(!dif.CS_N && !dif.HLDA)           cif.Program = 1; 
 else if(dif.HLDA)		     cif.Program = 0;
@@ -106,17 +129,17 @@ end
 always_comb begin 
 
 // default values for control outputs
-{cif.aen, cif.adstb, cif.ACTIVE_CYCLE, cif.IDLE_CYCLE, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 8'b00000000;  
+{cif.aen, cif.adstb, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 6'b000000;  
 {cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 5'b00000; 
 cif.validDACK = 1'b0;    		 
 
     unique case(1'b1)  // reverse case
 
-	    state[iSI]: begin cif.IDLE_CYCLE = 1'b1; cif.hrq = 1'b0;  end
+	    state[iSI]: begin  cif.hrq = 1'b0;  end
 
 	    state[iS0]: begin  cif.hrq = 1'b1; end
 				
-	    state[iS1]: begin cif.ACTIVE_CYCLE = 1'b1; cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
+	    state[iS1]: begin  cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         
 	    state[iS2]: begin  cif.aen = 1'b1; cif.adstb = 1'b0; cif.checkRead = 1'b1; cif.hrq = 1'b1; cif.checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
 				
@@ -130,4 +153,5 @@ cif.validDACK = 1'b0;
     endcase
 end
 				 
-endmodule		
+endmodule
+
