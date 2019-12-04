@@ -119,7 +119,7 @@ module DmaPriority(dma_if.PR dif, DmaDatapathIf.PRIORITY rif);
 	// HRQ output
 	always_comb dif.HRQ = cif.hrq;
 
-	// setting HRQ output if valid cif.DREQ based on polarity and select priority encoding
+	// select priority encoding
 	always_comb begin
 		if(validDREQ && rif.commandReg[4]) 	  enRotatingPriority <= 1; 
 		else if(validDREQ && !rif.commandReg[4])  enFixedPriority <= 1;
