@@ -1,10 +1,10 @@
 // DMA Timing Control module
 
-module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, commandReg, modeReg, statusReg);
+module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaRegIf.TC rif);
 
-input logic [7:0] commandReg;
-input logic [5:0] modeReg[4];
-input logic [7:0] statusReg;
+input logic [7:0] rif.commandReg;
+input logic [5:0] rif.modeReg[4];
+input logic [7:0] rif.statusReg;
 	
 
  // index for each state in the state register
@@ -63,17 +63,17 @@ end
 // Write extend & Read or Write operation
 always_comb begin
 if(cif.checkWriteExtend)
-	if (commandReg[5] == 1'b1 && modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0)
+	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0)
 		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
 	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
 
 else if(cif.checkWrite)
-	if(modeReg[0][3:2] == 2'b01 || modeReg[1][3:2] == 2'b01 || modeReg[2][3:2] == 2'b01 || modeReg[3][3:2] == 2'b01 && commandReg[0] == 1'b0) 
+	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
 		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
 	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
 	
 else if(cif.checkRead)
-	if(modeReg[0][3:2] == 2'b10 || modeReg[1][3:2] == 2'b10 || modeReg[2][3:2] == 2'b10 || modeReg[3][3:2] == 2'b10 && commandReg[0] == 1'b0)    			
+	if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
 		begin cif.memr = 1'b0; cif.iow = 1'b0; end   
 	else    begin cif.memr = 1'b1; cif.iow = 1'b1; end   
 end
@@ -81,7 +81,7 @@ end
 // End of process by terminal count 
 always_comb begin
 if(cif.checkEOP )
-	if(statusReg[3:0]) cif.eop = 1'b0;  
+	if(rif.statusReg[3:0]) cif.eop = 1'b0;  
 	else		       cif.eop = 1'b1;
 else			       cif.eop = 1'b1;
 end
