@@ -2,8 +2,6 @@
 interface dma_if(input logic CLK, RESET);
 
 	// interface to 8086 processor
-	logic 	    MEMR_N;   		// memory read
-	logic 	    MEMW_N;		// memory write
 	wire 	    IOR_N;		// IO read
 	wire 	    IOW_N;		// IO write
 	logic 	    HLDA;		// Hold acknowledge from CPU to indicate it has relinquished bus control
@@ -14,7 +12,7 @@ interface dma_if(input logic CLK, RESET);
 	wire  [3:0] ADDR_L;		// lower address which connects to address A3-A0 of 8086 CPU
 	wire  [7:0] DB;			// data
 	logic       CS_N; 		// Chip select 
-	logic       AEN;		// address enable
+	
 
 	// Request and Acknowledge interface
 	logic [3:0] DREQ;		// asynchronous DMA channel request lines
@@ -22,9 +20,10 @@ interface dma_if(input logic CLK, RESET);
 
 	// interface signal to 8-bit Latch
 	logic       ADSTB;		// Address strobe
-
+	logic       AEN;		// address enable
+	
 	// EOP signal
-	wire 	    EOP;		// bi-directional signal to end DMA active transfers
+	wire 	    EOP_N;		// bi-directional signal to end DMA active transfers
 
 
 	// modport for design
@@ -34,33 +33,52 @@ interface dma_if(input logic CLK, RESET);
 			inout  DB,
 			inout  ADDR_L,
 
-			inout  EOP,
+			inout  EOP_N,
 
 			input  DREQ,
 			input  HLDA,
 			input  CS_N,
 
 			output ADDR_U,
-			output MEMR_N,
-			output MEMW_N,
 			output DACK,
 			output HRQ,
 			output AEN,
 			output ADSTB
 	       	);
+	
+	// modport for Datapath
+	modport DP(
+			inout  IOR_N,
+			inout  IOW_N,
+			inout  DB,
+			inout  ADDR_L,
+			inout  EOP_N,
+			output ADDR_U,
+			output AEN,
+			output ADSTB
+	):
+	
+	// modport for Priority logic
+	modport PR(
+			output DACK,
+			output HRQ,	
+			input  DREQ,
+			input  HLDA		
+	);
+	
+	// modport for Timing Control logic
+	modport TC(
+			input  HLDA,
+			input  CS_N,
+			inout EOP_N
+	);
+	
+	modport REG(
+			inout  IOR_N,
+			inout  IOW_N,
+			input  CS_N
+	);
 
-	// TODO: modport for TB and other TB components (if any)
-	//modport TB();
-
-	//// TODO: clocking block
-	//clocking cb @(posedge CLK);
-
-
-	//endclocking
-
-	// TODO: tasks (if any)
-
-	// TODO: assertions (either put here or make separate module)
 
 endinterface
 
