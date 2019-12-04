@@ -1,5 +1,6 @@
 // DMA Registers module
 
+
 module DmaRegisters(dma_if.DUT dif, DmaDatapathIf.REG drf, DmaControlIf cif);
 
 localparam [7:0] READCURRADDR[4]         = {8'b10010000,8'b10010010,8'b10010100,8'b10010110};
@@ -347,27 +348,22 @@ always_ff@(posedge dma_if.CLK)
          begin
              if(dma_if.RESET||drf.masterClear)
                begin
-                   drf.tempAddrReg[0] <= '0;
-                   drf.tempAddrReg[1] <= '0;
-                   drf.tempAddrReg[2] <= '0;
-                   drf.tempAddrReg[3] <= '0;
+                   drf.tempAddrReg <= '0;
+
                 end 
             else if(cif.ldCurrAddrTemp)     //to load the current address into temporary register and then increment or decrement
                     begin   
-                      drf.tempAddrReg <= drf.currAddrReg;
+                      drf.tempAddrReg <= drf.currAddrReg[drf.requestReg[1:0]];
                       {drf.outAddrBuf,drf.ioAddrBuf} = drf.currWordReg[7:0];
                       if(drf.modeReg[5] == 0)
-                          drf.tempAddrReg[drf.requestReg[1:0]] <= drf.tempAddrReg[drf.requestReg[1:0]]  + 16'b0000000000000001;
+                          drf.tempAddrReg <= drf.tempAddrReg  + 16'b0000000000000001;
                       else
-                          drf.tempAddrReg[drf.requestReg[1:0]] <= drf.tempAddrReg[drf.requestReg[1:0]]  - 16'b0000000000000001;
+                          drf.tempAddrReg <= drf.tempAddrReg  - 16'b0000000000000001;
                     end
              else
                   begin
-                 drf.tempAddrReg[0] <= drf.tempAddrReg[0];
-                 drf.tempAddrReg[1] <= drf.tempAddrReg[1];
-                 drf.tempAddrReg[2] <= drf.tempAddrReg[2];
-                 drf.tempAddrReg[3] <= drf.tempAddrReg[3];
-                 end
+                 drf.tempAddrReg <= drf.tempAddrReg;
+                  end
          end
 
 // Temporary Word Register
@@ -376,27 +372,23 @@ always_ff@(posedge dma_if.CLK)
          begin
            if(dma_if.RESET||drf.masterClear)
                    begin
-                   drf.tempWordReg[0] <= '0;
-		   drf.tempWordReg[0] <= '0;
-		   drf.tempWordReg[0] <= '0;
-		   drf.tempWordReg[0] <= '0;
+                   drf.tempWordReg <= '0;
+
                      end 
             else if(cif.ldCurrWordTemp)
                 begin
-                 drf.tempWordReg[drf.requestReg[1:0]] <= drf.currWordReg[drf.requestReg[1:0]];
-                 drf.tempWordReg[drf.requestReg[1:0]] <= drf.tempWordReg[drf.requestReg[1:0]] - 16'b0000000000000001;
+                 drf.tempWordReg <= drf.currWordReg[drf.requestReg[1:0]];
+                 drf.tempWordReg <= drf.tempWordReg - 16'b0000000000000001;
                end
-           if(drf.tempWordReg[drf.requestReg[1:0]] ==0)
+           if(drf.tempWordReg ==0)
              begin
               cif.TC[drf.requestReg[1:0]] <= 1;
-              drf.tempWordReg[drf.requestReg[1:0]] <= 16'b1111111111111111;
+              drf.tempWordReg <= 16'b1111111111111111;
              end
             else
                begin 
-              drf.tempWordReg[0] <= drf.tempWordReg[0];
-              drf.tempWordReg[0] <= drf.tempWordReg[0];
-              drf.tempWordReg[0] <= drf.tempWordReg[0];
-              drf.tempWordReg[0] <= drf.tempWordReg[0];
+              drf.tempWordReg <= drf.tempWordReg;
+     
               end 
           end
  
