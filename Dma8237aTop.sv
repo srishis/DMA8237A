@@ -26,8 +26,8 @@ DmaTimingControl C1(
 // Priority logic
 DmaPriority P1(
 		dif.PR,
-		rif.PR,
-		cif.PR 
+		cif.PR,
+		rif.PR 
 );
 
 
