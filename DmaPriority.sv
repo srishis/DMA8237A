@@ -1,6 +1,5 @@
 module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif); 
 
-	input logic [7:0] rif.requestReg, rif.maskReg, rif.commandReg; 
 	
 	logic validDREQ; 
 	logic [3:0] pencoderOut;
