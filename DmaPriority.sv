@@ -1,6 +1,6 @@
-module DmaPriority(dma_if.PR dif, requestReg, maskReg, commandReg); 
+module DmaPriority(dma_if.PR dif, DmaRegIf.PR rif); 
 
-	input logic [7:0] requestReg, maskReg, commandReg; 
+	input logic [7:0] rif.requestReg, rif.maskReg, rif.commandReg; 
 	
 	logic validDREQ; 
 	logic [3:0] pencoderOut;
@@ -10,26 +10,26 @@ module DmaPriority(dma_if.PR dif, requestReg, maskReg, commandReg);
 
 	// decode Request register	
 	always_comb begin
-		if(requestReg[1:0] == 2'b00 && requestReg[2]) 	        cif.CH0_SEL = 1;
-		else if(requestReg[1:0] == 2'b00 && !requestReg[2])     cif.CH0_SEL = 0; 
-		if(requestReg[1:0] == 2'b01 && requestReg[2]) 	        cif.CH1_SEL = 1;
-		else if(requestReg[1:0] == 2'b01 && !requestReg[2])     cif.CH1_SEL = 0; 
-		if(requestReg[1:0] == 2'b10 && requestReg[2])           cif.CH2_SEL = 1;
-		else if(requestReg[1:0] == 2'b10 && !requestReg[2])     cif.CH2_SEL = 0; 
-		if(requestReg[1:0] == 2'b11 && requestReg[2])           cif.CH3_SEL = 1;
-		else if(requestReg[1:0] == 2'b11 && !requestReg[2])     cif.CH3_SEL = 0; 
+		if(rif.requestReg[1:0] == 2'b00 && rif.requestReg[2]) 	        cif.CH0_SEL = 1;
+		else if(rif.requestReg[1:0] == 2'b00 && !rif.requestReg[2])     cif.CH0_SEL = 0; 
+		if(rif.requestReg[1:0] == 2'b01 && rif.requestReg[2]) 	        cif.CH1_SEL = 1;
+		else if(rif.requestReg[1:0] == 2'b01 && !rif.requestReg[2])     cif.CH1_SEL = 0; 
+		if(rif.requestReg[1:0] == 2'b10 && rif.requestReg[2])           cif.CH2_SEL = 1;
+		else if(rif.requestReg[1:0] == 2'b10 && !rif.requestReg[2])     cif.CH2_SEL = 0; 
+		if(rif.requestReg[1:0] == 2'b11 && rif.requestReg[2])           cif.CH3_SEL = 1;
+		else if(rif.requestReg[1:0] == 2'b11 && !rif.requestReg[2])     cif.CH3_SEL = 0; 
 	end
 
 	// decode Mask register	
 	always_comb begin
-		if(maskReg[1:0] == 2'b00 && maskReg[2]) 	 cif.CH0_MASK = 1;
-		else if(maskReg[1:0] == 2'b00 && !maskReg[2])    cif.CH0_MASK = 0; 
-		if(maskReg[1:0] == 2'b01 && maskReg[2]) 	 cif.CH1_MASK = 1;
-		else if(maskReg[1:0] == 2'b01 && !maskReg[2])    cif.CH1_MASK = 0; 
-		if(maskReg[1:0] == 2'b10 && maskReg[2])          cif.CH2_MASK = 1;
-		else if(maskReg[1:0] == 2'b10 && !maskReg[2])    cif.CH2_MASK = 0; 
-		if(maskReg[1:0] == 2'b11 && maskReg[2])          cif.CH3_MASK = 1;
-		else if(maskReg[1:0] == 2'b11 && !maskReg[2])    cif.CH3_MASK = 0; 
+		if(rif.maskReg[1:0] == 2'b00 && rif.maskReg[2]) 	 cif.CH0_MASK = 1;
+		else if(rif.maskReg[1:0] == 2'b00 && !rif.maskReg[2])    cif.CH0_MASK = 0; 
+		if(rif.maskReg[1:0] == 2'b01 && rif.maskReg[2]) 	 cif.CH1_MASK = 1;
+		else if(rif.maskReg[1:0] == 2'b01 && !rif.maskReg[2])    cif.CH1_MASK = 0; 
+		if(rif.maskReg[1:0] == 2'b10 && rif.maskReg[2])          cif.CH2_MASK = 1;
+		else if(rif.maskReg[1:0] == 2'b10 && !rif.maskReg[2])    cif.CH2_MASK = 0; 
+		if(rif.maskReg[1:0] == 2'b11 && rif.maskReg[2])          cif.CH3_MASK = 1;
+		else if(rif.maskReg[1:0] == 2'b11 && !rif.maskReg[2])    cif.CH3_MASK = 0; 
 	end
 
 	
@@ -37,37 +37,37 @@ module DmaPriority(dma_if.PR dif, requestReg, maskReg, commandReg);
 	always_comb begin
 		
 		// DREQ polarity
-		if(!commandReg[6] && cif.CH0_SEL && !cif.CH0_MASK)     cif.DREQ0_ACTIVE_HIGH = 1;
-		else if(commandReg[6] && cif.CH0_SEL && !cif.CH0_MASK) cif.DREQ0_ACTIVE_LOW = 1;
+		if(!rif.commandReg[6] && cif.CH0_SEL && !cif.CH0_MASK)     cif.DREQ0_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[6] && cif.CH0_SEL && !cif.CH0_MASK) cif.DREQ0_ACTIVE_LOW = 1;
 		else begin cif.DREQ0_ACTIVE_HIGH = 0; cif.DREQ0_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[6] && cif.CH1_SEL && !cif.CH1_MASK)     cif.DREQ1_ACTIVE_HIGH = 1;
-		else if(commandReg[6] && cif.CH1_SEL && !cif.CH1_MASK) cif.DREQ1_ACTIVE_LOW = 1;
+		if(!rif.commandReg[6] && cif.CH1_SEL && !cif.CH1_MASK)     cif.DREQ1_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[6] && cif.CH1_SEL && !cif.CH1_MASK) cif.DREQ1_ACTIVE_LOW = 1;
 		else begin cif.DREQ1_ACTIVE_HIGH = 0; cif.DREQ1_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[6] && cif.CH2_SEL && !cif.CH2_MASK)     cif.DREQ2_ACTIVE_HIGH = 1;
-		else if(commandReg[6] && cif.CH2_SEL && !cif.CH2_MASK) cif.DREQ2_ACTIVE_LOW = 1;
+		if(!rif.commandReg[6] && cif.CH2_SEL && !cif.CH2_MASK)     cif.DREQ2_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[6] && cif.CH2_SEL && !cif.CH2_MASK) cif.DREQ2_ACTIVE_LOW = 1;
 		else begin cif.DREQ2_ACTIVE_HIGH = 0; cif.DREQ2_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[6] && cif.CH3_SEL && !cif.CH3_MASK)     cif.DREQ3_ACTIVE_HIGH = 1;
-		else if(commandReg[6] && cif.CH3_SEL && !cif.CH3_MASK) cif.DREQ3_ACTIVE_LOW = 1;
+		if(!rif.commandReg[6] && cif.CH3_SEL && !cif.CH3_MASK)     cif.DREQ3_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[6] && cif.CH3_SEL && !cif.CH3_MASK) cif.DREQ3_ACTIVE_LOW = 1;
 		else begin cif.DREQ3_ACTIVE_HIGH = 0; cif.DREQ3_ACTIVE_LOW = 0; end  		   		
 
 		// DACK polarity
-		if(!commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK)     cif.DACK0_ACTIVE_HIGH = 1;
-		else if(commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK) cif.DACK0_ACTIVE_LOW = 1;
+		if(!rif.commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK)     cif.DACK0_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK) cif.DACK0_ACTIVE_LOW = 1;
 		else begin cif.DACK0_ACTIVE_HIGH = 0; cif.DACK0_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[7] && cif.CH1_SEL && !cif.CH1_MASK)     cif.DACK1_ACTIVE_HIGH = 1;
-		else if(commandReg[7] && cif.CH1_SEL && !cif.CH1_MASK) cif.DACK1_ACTIVE_LOW = 1;
+		if(!rif.commandReg[7] && cif.CH1_SEL && !cif.CH1_MASK)     cif.DACK1_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[7] && cif.CH1_SEL && !cif.CH1_MASK) cif.DACK1_ACTIVE_LOW = 1;
 		else begin cif.DACK1_ACTIVE_HIGH = 0; cif.DACK1_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[7] && cif.CH2_SEL && !cif.CH2_MASK)     cif.DACK2_ACTIVE_HIGH = 1;
-		else if(commandReg[7] && cif.CH2_SEL && !cif.CH2_MASK) cif.DACK2_ACTIVE_LOW = 1;
+		if(!rif.commandReg[7] && cif.CH2_SEL && !cif.CH2_MASK)     cif.DACK2_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[7] && cif.CH2_SEL && !cif.CH2_MASK) cif.DACK2_ACTIVE_LOW = 1;
 		else begin cif.DACK2_ACTIVE_HIGH = 0; cif.DACK2_ACTIVE_LOW = 0; end  		   		
 
-		if(!commandReg[7] && cif.CH3_SEL && !cif.CH3_MASK)     cif.DACK3_ACTIVE_HIGH = 1;
-		else if(commandReg[7] && cif.CH3_SEL && !cif.CH3_MASK) cif.DACK3_ACTIVE_LOW = 1;
+		if(!rif.commandReg[7] && cif.CH3_SEL && !cif.CH3_MASK)     cif.DACK3_ACTIVE_HIGH = 1;
+		else if(rif.commandReg[7] && cif.CH3_SEL && !cif.CH3_MASK) cif.DACK3_ACTIVE_LOW = 1;
 		else begin cif.DACK3_ACTIVE_HIGH = 0; cif.DACK3_ACTIVE_LOW = 0; end  
 		
 	end
@@ -118,8 +118,8 @@ module DmaPriority(dma_if.PR dif, requestReg, maskReg, commandReg);
 
 	// select priority encoding
 	always_comb begin
-		if(validDREQ && commandReg[4]) 	      enRotatingPriority <= 1; 
-		else if(validDREQ && !commandReg[4])  enFixedPriority <= 1;
+		if(validDREQ && rif.commandReg[4]) 	      enRotatingPriority <= 1; 
+		else if(validDREQ && !rif.commandReg[4])  enFixedPriority <= 1;
 	end
 	
 	// priority encoder
@@ -164,3 +164,4 @@ module DmaPriority(dma_if.PR dif, requestReg, maskReg, commandReg);
 		
 
 endmodule
+
