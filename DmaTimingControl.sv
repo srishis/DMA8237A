@@ -24,7 +24,7 @@ module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif)
   	} state, nextstate;
 	
 // Initial state condition
-always_ff @(posedge dma_if.CLK)    if(dma_if.RESET && dif.CS_N)  state <= SI;
+always_ff @(posedge dma_if.CLK)    if(dma_if.RESET || dif.CS_N)  state <= SI;
 else		             			                 state <= nextstate;
    
 // Program condition
