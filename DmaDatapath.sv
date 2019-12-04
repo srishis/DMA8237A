@@ -6,6 +6,7 @@ module DmaDatapath(dma_if.DP dif, DmaControlIf cif);
 
 // Databus DB as output 
   always_comb dif.DB = (cif.IDLE_CYCLE && ~dif.IOR_N) ? cif.ioDataBuf : 8'bz;
+  
 // IO Read logic
   always_comb dif.IOR_N = (cif.ACTIVE_CYCLE) ? cif.ior : 1'bz; // access data from peripheral during DMA write transfer
 
@@ -14,8 +15,7 @@ module DmaDatapath(dma_if.DP dif, DmaControlIf cif);
   always_comb dif.IOW_N = (cif.ACTIVE_CYCLE) ? cif.iow : 1'bz; // load data to peripheral during DMA read transfer
 
 // EOP logic
-// pullup resistor logic
-  assign (pull0, pull1) dif.EOP_N = '1;
+  assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
   always_comb dif.EOP_N = (cif.ACTIVE_CYCLE) ? cif.eop : 1'bz;
 
 // AEN & ADSTB functionality
