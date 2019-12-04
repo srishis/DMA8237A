@@ -72,7 +72,7 @@ else		             			                  state <= nextstate;
 // Program bit for DMA registers
 always_comb begin
 if(!dif.CS_N && !dif.HLDA)           cif.Program = 1; 
-else if(dif.HLDA)		     cif.Program = 0;
+else if(dif.CS_N && dif.HLDA) cif.Program = 0;
 end
 
 // Write extend & Read or Write operation
