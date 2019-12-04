@@ -44,12 +44,12 @@ localparam MASTERCLEARREG                = 8'b10101101;
 
 
 // Data bus logic
-  always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
+  always_ff@(posedge dma_if.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
   always_comb dif.DB = (!dif.CS_N && ~dif.IOR_N) ? ioDataBuf : 8'bz;
 
 // Address Bus logic
 
-  always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
+  always_ff@(posedge dma_if.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
   always_comb dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
   always_comb dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
 
@@ -57,9 +57,9 @@ localparam MASTERCLEARREG                = 8'b10101101;
 // DMA Registers logic
 
 //Base Address Register
-always_ff@(posedge dif.CLK) begin
+always_ff@(posedge dma_if.CLK) begin
  
-          if(dif.RESET||masterClear)  begin                
+          if(dma_if.RESET||masterClear)  begin                
                baseAddrReg[0] <= '0;
                baseAddrReg[1] <= '0;
                baseAddrReg[2] <= '0;
@@ -114,9 +114,9 @@ always_ff@(posedge dif.CLK) begin
 
 //Base Word Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
       begin
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              begin
                baseWordReg[0] <= '0;
                baseWordReg[1] <= '0;
@@ -170,10 +170,10 @@ always_ff@(posedge dif.CLK)
 
 // Current Address Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
       begin
  
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              begin
                   currAddrReg[0] <= '0;
                   currAddrReg[1] <= '0;
@@ -273,10 +273,10 @@ always_ff@(posedge dif.CLK)
          end
           
 // Current Word Register                     
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
       begin
  
-	      if(dif.RESET||masterClear)
+	      if(dma_if.RESET||masterClear)
             begin
                currWordReg[0] <= '0; 
                currWordReg[1] <= '0; 
@@ -375,9 +375,9 @@ always_ff@(posedge dif.CLK)
     
 //Temporary Address Register and Increment or Decrement
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
          begin
-             if(dif.RESET||masterClear)
+             if(dma_if.RESET||masterClear)
                begin
                    tempAddrReg <= '0;
 
@@ -399,9 +399,9 @@ always_ff@(posedge dif.CLK)
 
 // Temporary Word Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
          begin
-           if(dif.RESET||masterClear)
+           if(dma_if.RESET||masterClear)
                    begin
                    tempWordReg <= '0;
 
@@ -427,10 +427,10 @@ always_ff@(posedge dif.CLK)
 // Mode Register
 // cif.Programmed by the CPU
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
           
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
             begin
              rif.modeReg[0] <= 16'b0;
              rif.modeReg[1] <= 16'b0;
@@ -463,10 +463,10 @@ always_ff@(posedge dif.CLK)
 
 // Command Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
           
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              rif.commandReg <= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITECOMMANDREG)
                rif.commandReg <= ioDataBuf;            
@@ -478,10 +478,10 @@ always_ff@(posedge dif.CLK)
 
 //Request Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
           
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              rif.requestReg= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEREQUESTREG)
                rif.requestReg <= ioDataBuf;            
@@ -493,10 +493,10 @@ always_ff@(posedge dif.CLK)
 
 // Mask Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
           
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
                rif.maskReg= '0;          
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEALLMASKREG)
               begin 
@@ -510,10 +510,10 @@ always_ff@(posedge dif.CLK)
              
 //Temporary Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
           
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              tempReg <= 0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == READTEMPREG)
                ioDataBuf <= tempReg;            
@@ -524,7 +524,7 @@ always_ff@(posedge dif.CLK)
 
 //Status Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
         begin
 
                  rif.statusReg[0] <= (TC[0])?1'b1:1'b0;
@@ -536,7 +536,7 @@ always_ff@(posedge dif.CLK)
                  rif.statusReg[6] <= (cif.VALID_DREQ2)?1'b1:1'b0; 
                  rif.statusReg[7] <= (cif.VALID_DREQ3)?1'b1:1'b0; 
 
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
              rif.statusReg <= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == READSTATUSREG)
              ioDataBuf <= rif.statusReg;
@@ -548,7 +548,7 @@ always_ff@(posedge dif.CLK)
           
 // CLEAR FF
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
 
             if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == CLEARFF)
@@ -560,7 +560,7 @@ always_ff@(posedge dif.CLK)
 
 //Master Clear
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
           begin
             masterClear <= 0;
             if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == CLEARMASKREG)     
@@ -571,7 +571,7 @@ always_ff@(posedge dif.CLK)
 
 //Clear Mask Register
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
          begin
            
           if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == CLEARMASKREG)
@@ -583,9 +583,9 @@ always_ff@(posedge dif.CLK)
 
 //Read Buffer
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
        begin
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
               begin
                  readBuf <= '0;
               end
@@ -597,9 +597,9 @@ always_ff@(posedge dif.CLK)
 
 //Write Buffer
 
-always_ff@(posedge dif.CLK)
+always_ff@(posedge dma_if.CLK)
        begin
-          if(dif.RESET||masterClear)
+          if(dma_if.RESET||masterClear)
               begin
                  writeBuf <= '0;
               end
@@ -610,3 +610,4 @@ always_ff@(posedge dif.CLK)
         end 
 
 endmodule
+
