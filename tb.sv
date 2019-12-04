@@ -14,15 +14,7 @@ initial #10 forever  CLK = ~CLK;
 initial begin
 	RESET = 1;
 	repeat(50)@(negedge CLK) RESET = 0;
-end 
-	
-initial begin
-	
-
 end
-
-
-
 
 endmodule
 
