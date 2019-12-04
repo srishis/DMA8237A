@@ -12,8 +12,8 @@ logic hrq;
 logic writeExtend;
 logic checkWriteExtend;
 logic checkEOP;
-logic checkReadWrite;
-
+logic checkRead;
+logic checkWrite;
 logic ldCurrAddrTemp; 
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
