@@ -1,6 +1,6 @@
 // DMA Timing Control module
 
-module DmaTimingControl(dma_if.DUT dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
+module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
 
 
  // index for each state in the state register
