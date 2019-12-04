@@ -1,5 +1,5 @@
 
-module DmaDatapath(dma_if.DUT dif, DmaControlIf cif);
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif);
 
 // Data bus logic
   always_ff@(posedge dma_if.CLK) if(cif.IDLE_CYCLE && !dif.IOW_N) cif.ioDataBuf <= dif.DB;  // @Srini: CPU send register programming during IO Write in IDLE_CYCLE 
