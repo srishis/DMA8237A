@@ -4,6 +4,8 @@ interface dma_if(input logic CLK, RESET);
 	// interface to 8086 processor
 	wire 	    IOR_N;		// IO read
 	wire 	    IOW_N;		// IO write
+	logic 	    MEMR_N;		// MEM read
+	logic 	    MEMW_N;		// MEM write
 	logic 	    HLDA;		// Hold acknowledge from CPU to indicate it has relinquished bus control
 	logic 	    HRQ;		// Hold request from DMA to CPU for bus control
 
@@ -26,7 +28,7 @@ interface dma_if(input logic CLK, RESET);
 	wire 	    EOP_N;		// bi-directional signal to end DMA active transfers
 
 
-	// modport for design
+	// modport for design top
 	modport DUT(
 			inout  IOR_N,
 			inout  IOW_N,
@@ -53,9 +55,7 @@ interface dma_if(input logic CLK, RESET);
 			input  CS_N,
 			inout  DB,
 			inout  ADDR_L,
-			output ADDR_U,
-			output AEN,
-			output ADSTB
+			output ADDR_U		
 	);
 	
 	// modport for Priority logic
@@ -68,16 +68,17 @@ interface dma_if(input logic CLK, RESET);
 	
 	// modport for Timing Control logic
 	modport TC(
-			input  HLDA,
-			input  CS_N,
-			inout EOP_N
+			input   HLDA,
+		   	output  IOR_N,
+			output  IOW_N,
+			output 	MEMR_N;		
+			output 	MEMW_N;		
+			input   CS_N,
+			inout   EOP_N,
+			output  AEN,
+			output  ADSTB
 	);
 	
-	modport REG(
-			inout  IOR_N,
-			inout  IOW_N,
-			input  CS_N
-	);
 
 
 endinterface
