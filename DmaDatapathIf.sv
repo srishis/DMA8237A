@@ -1,8 +1,15 @@
 interface DmaDatapathIf(input logic CLK ,RESET);
 
+// Datapath Buffers
+logic [3:0] ioAddrBuf;      
+logic [3:0] outAddrBuf;      
+logic [7:0] ioDataBuf;  
+	
 // Read Write Buffers
 logic [7:0] readBuf;
-logic [7:0] writeBuf; 
+logic [7:0] writeBuf;
+
+// DMA Registers
 logic [15:0] currAddrReg[4];
 logic [15:0] currWordReg[4];
 logic [15:0] baseAddrReg[4];
@@ -15,6 +22,8 @@ logic [7:0]  tempReg;
 logic [7:0]  tempAddrReg;
 logic [7:0]  tempWordReg;
 logic [7:0]  statusReg;
+	
+// Register commands
 logic masterClear;
 logic FF;
 
@@ -31,10 +40,13 @@ modport FSM(
 	);
 
 modport REG(	
-		inout readBuf,
-		inout writeBuf,
-		output masterClear,
-		output FF,
+		inout   ioAddrBuf,
+		inout   ioDataBuf,
+		inout   outAddrBuf,
+		inout   readBuf,
+		inout   writeBuf,
+		inout   masterClear,
+		inout   FF,
 		output  currAddrReg,
 		output  currWordReg,
 		output  baseAddrReg,
