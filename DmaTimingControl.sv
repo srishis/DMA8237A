@@ -43,22 +43,22 @@ logic ldtempCurrWord;
   	} state, nextstate;
 	
 // IO Read logic
-  always_comb dif.IOR_N = (dif.CS_N) ? ior : 1'bz; // access data from peripheral during DMA write transfer
+  always_comb dif.IOR_N = (dif.HLDA) ? ior : 1'bz; // access data from peripheral during DMA write transfer
 
 // IO Write logic
 
-  always_comb dif.IOW_N = (dif.CS_N) ? iow : 1'bz; // load data to peripheral during DMA read transfer
+  always_comb dif.IOW_N = (dif.HLDA) ? iow : 1'bz; // load data to peripheral during DMA read transfer
 
 // MEM Read logic
-  always_comb dif.MEMR_N = (dif.CS_N) ? memr : 1'bz; // access data from peripheral during DMA write transfer
+  always_comb dif.MEMR_N = (dif.HLDA) ? memr : 1'bz; // access data from peripheral during DMA write transfer
 
 // MEM Write logic
 
-  always_comb dif.MEMW_N = (dif.CS_N) ? memw : 1'bz; // load data to peripheral during DMA read transfer
+  always_comb dif.MEMW_N = (dif.HLDA) ? memw : 1'bz; // load data to peripheral during DMA read transfer
 
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
-  always_comb dif.EOP_N = (dif.CS_N) ? eop : 1'bz;
+  always_comb dif.EOP_N = (dif.HLDA) ? eop : 1'bz;
 
 // AEN & ADSTB functionality
   always_comb dif.AEN <= aen; 
