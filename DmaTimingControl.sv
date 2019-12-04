@@ -1,8 +1,11 @@
 // DMA Timing Control module
 
-module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaDatapathIf.FSM rif);
-	
+module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, commandReg, modeReg);
 
+// registers as inputs from Data path
+input logic [7:0] commandReg;
+input logic [5:0] modeReg[4];
+	
  // index for each state in the state register
  enum logic [2:0] {
   	iSI   = 0,
@@ -129,7 +132,7 @@ end
 always_comb begin 
 
 // default values for control outputs
-{cif.aen, cif.adstb, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 6'b000000;  
+{cif.aen, cif.adstb, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 8'b000000;  
 {cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 5'b00000; 
 cif.validDACK = 1'b0;    		 
 
