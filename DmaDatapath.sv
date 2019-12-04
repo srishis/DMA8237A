@@ -1,12 +1,13 @@
 // DMA Data path module with register definitions
 
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, modeReg, commandReg, requestReg, maskReg);
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif, modeReg, commandReg, requestReg, maskReg, statusReg);
 
 // DMA Registers
 output [5:0]  modeReg[4];
 output [7:0]  commandReg;
 output [7:0]  requestReg;
 output [7:0]  maskReg;
+output [7:0]  statusReg;
 
 // internal registers
 logic [15:0] currAddrReg[4];
@@ -16,7 +17,7 @@ logic [15:0] baseWordReg[4];
 logic [7:0]  tempReg;
 logic [7:0]  tempAddrReg;
 logic [7:0]  tempWordReg;
-logic [7:0]  statusReg;
+
 
 // Datapath Buffers
 logic [3:0] ioAddrBuf;      
