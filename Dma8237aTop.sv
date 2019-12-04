@@ -5,23 +5,13 @@ module Dma8237aTop(dma_if.DUT dif, input logic CLK, RESET);
 
 // DMA interface instantiation
 DmaControlIf cif(CLK, RESET);
-
-logic [5:0]  modeReg[4];
-logic [7:0]  commandReg;
-logic [7:0]  requestReg;
-logic [7:0]  maskReg;
-logic [7:0]  statusReg;
+DmaRegIf rif(CLK, RESET);
 
 // DMA modules instantiation
 // Datapath module
 DmaDatapath D1(
 		dp_if.DP, 
-		cif, 
-		modeReg,
-		commandReg,
-		requestReg,
-		maskReg,
-		statusReg
+		cif, rif
 );
 	
 	
@@ -29,19 +19,14 @@ DmaDatapath D1(
 DmaTimingControl C1(
 		     dif.TC, 
 		     cif, 
-		     commandReg,
-		     modeReg,
-		     statusReg
+		     rif
 );
 
 // Priority logic
 DmaPriority P1(
 		dif.PR,
-		requestReg,
-		maskReg,
-		commandReg
-		
-		
+		rif
+	
 );
 
 
