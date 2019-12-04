@@ -1,13 +1,6 @@
 // DMA Data path module with register definitions
 
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, modeReg, commandReg, requestReg, maskReg, statusReg);
-
-// DMA Registers
-output [5:0]  modeReg[4];
-output [7:0]  commandReg;
-output [7:0]  requestReg;
-output [7:0]  maskReg;
-output [7:0]  statusReg;
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif, DmaRegIf rif);
 
 // internal registers
 logic [15:0] currAddrReg[4];
@@ -187,14 +180,14 @@ always_ff@(posedge dma_if.CLK)
                   currAddrReg[3] <= '0;
              end
 //When TC is reached and the auto initialization is disabled, the value to be set to zero
-            else if ((cif.TC[requestReg[1:0]])&&(modeReg[4]==0))
+            else if ((cif.TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
                 begin    
-                  currAddrReg[requestReg[1:0]] <= '0;
+                  currAddrReg[rif.requestReg[1:0]] <= '0;
                 end
 //When TC is reached and the auto initialization is enabled, the value to be re-initialised from the base registers
-          else if ((cif.TC[requestReg[1:0]]) && (modeReg[4]==1))        
+          else if ((cif.TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))        
                 begin  
-                  currAddrReg[requestReg[1:0]] <= baseAddrReg[requestReg[1:0]]; 
+                  currAddrReg[rif.requestReg[1:0]] <= baseAddrReg[rif.requestReg[1:0]]; 
                 end
 //command code to write curr and base address registers     current Address Reg 0      
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEBASECURRADDR[0])
@@ -265,10 +258,10 @@ always_ff@(posedge dma_if.CLK)
 
           else if(cif.enCurrAddr) 
                   begin         // to give the most significant 8 bits as output to the i/o data bus
-                    ioDataBuf <= currAddrReg[requestReg[1:0]][15:8];
+                    ioDataBuf <= currAddrReg[rif.requestReg[1:0]][15:8];
                   end
            else if(cif.ldTempCurrAddr)      //signal to load the temporary address register to current address register value 
-                  currAddrReg[requestReg[1:0]] <= tempAddrReg;
+                  currAddrReg[rif.requestReg[1:0]] <= tempAddrReg;
           else
               begin
                   currAddrReg[0] <= currAddrReg[0];
@@ -290,14 +283,14 @@ always_ff@(posedge dma_if.CLK)
                currWordReg[3] <= '0; 
             end 
        
-          else if((cif.TC[requestReg[1:0]])&&(modeReg[4]==0))
+          else if((cif.TC[rif.requestReg[1:0]])&&(rif.modeReg[4]==0))
              begin
-               currWordReg[requestReg[1:0]] <= '0;
+               currWordReg[rif.requestReg[1:0]] <= '0;
              end
 
-          else if((cif.TC[requestReg[1:0]]) && (modeReg[4]==1))
+          else if((cif.TC[rif.requestReg[1:0]]) && (rif.modeReg[4]==1))
              begin
-                 currWordReg[requestReg[1:0]] <= baseWordReg[requestReg[1:0]];
+                 currWordReg[rif.requestReg[1:0]] <= baseWordReg[rif.requestReg[1:0]];
              end
 //write Current word 0
          else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEBASECURRCOUNT[0])
@@ -366,7 +359,7 @@ always_ff@(posedge dma_if.CLK)
                   end
            else if(cif.ldTempCurrWord)     //signal to load the temporary address register to current address register value
                 begin
-                  currWordReg[requestReg[1:0]] <= tempWordReg;
+                  currWordReg[rif.requestReg[1:0]] <= tempWordReg;
                 end
           else
               begin 
@@ -390,9 +383,9 @@ always_ff@(posedge dma_if.CLK)
                 end 
             else if(cif.ldCurrAddrTemp)     //to load the current address into temporary register and then increment or decrement
                     begin   
-                      tempAddrReg <= currAddrReg[requestReg[1:0]];
+                      tempAddrReg <= currAddrReg[rif.requestReg[1:0]];
                       {outAddrBuf,ioAddrBuf} = currWordReg[7:0];
-                      if(modeReg[5] == 0)
+                      if(rif.modeReg[5] == 0)
                           tempAddrReg <= tempAddrReg  + 16'b0000000000000001;
                       else
                           tempAddrReg <= tempAddrReg  - 16'b0000000000000001;
@@ -414,12 +407,12 @@ always_ff@(posedge dma_if.CLK)
                      end 
             else if(cif.ldCurrWordTemp)
                 begin
-                 tempWordReg <= currWordReg[requestReg[1:0]];
+                 tempWordReg <= currWordReg[rif.requestReg[1:0]];
                  tempWordReg <= tempWordReg - 16'b0000000000000001;
                end
            if(tempWordReg ==0)
              begin
-              cif.TC[requestReg[1:0]] <= 1;
+              cif.TC[rif.requestReg[1:0]] <= 1;
               tempWordReg <= 16'b1111111111111111;
              end
             else
@@ -438,29 +431,29 @@ always_ff@(posedge dma_if.CLK)
           
           if(dma_if.RESET||masterClear)
             begin
-             modeReg[0] <= 16'b0;
-             modeReg[1] <= 16'b0;
-             modeReg[2] <= 16'b0;
-             modeReg[3] <= 16'b0;
+             rif.modeReg[0] <= 16'b0;
+             rif.modeReg[1] <= 16'b0;
+             rif.modeReg[2] <= 16'b0;
+             rif.modeReg[3] <= 16'b0;
             end
 //Mode Register 0
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == MODEREGWRITE[0])
-               modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];  
+               rif.modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];  
 //Mode Register 1
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == MODEREGWRITE[1])
-               modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];
+               rif.modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];
 //Mode Register 2
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == MODEREGWRITE[2])
-               modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];
+               rif.modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];
 //Mode Register 3
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == MODEREGWRITE[3])
-               modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];          
+               rif.modeReg[ioDataBuf[1:0]] <= ioDataBuf[7:2];          
           else 
               begin
-              modeReg[0] <=  modeReg[0] ;
-              modeReg[1] <=  modeReg[1] ;
-              modeReg[2] <=  modeReg[2] ;
-              modeReg[3] <=  modeReg[3] ;
+              rif.modeReg[0] <=  rif.modeReg[0] ;
+              rif.modeReg[1] <=  rif.modeReg[1] ;
+              rif.modeReg[2] <=  rif.modeReg[2] ;
+              rif.modeReg[3] <=  rif.modeReg[3] ;
               end
           end
                
@@ -473,11 +466,11 @@ always_ff@(posedge dma_if.CLK)
           begin
           
           if(dma_if.RESET||masterClear)
-             commandReg <= '0;
+             rif.commandReg <= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITECOMMANDREG)
-               commandReg <= ioDataBuf;            
+               rif.commandReg <= ioDataBuf;            
           else 
-              commandReg <=  commandReg;
+              rif.commandReg <=  rif.commandReg;
           end
                
 
@@ -488,11 +481,11 @@ always_ff@(posedge dma_if.CLK)
           begin
           
           if(dma_if.RESET||masterClear)
-             requestReg= '0;
+             rif.requestReg= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEREQUESTREG)
-               requestReg <= ioDataBuf;            
+               rif.requestReg <= ioDataBuf;            
           else 
-              requestReg <=  requestReg ;
+              rif.requestReg <=  rif.requestReg ;
           end
                
 
@@ -503,13 +496,13 @@ always_ff@(posedge dma_if.CLK)
           begin
           
           if(dma_if.RESET||masterClear)
-               maskReg= '0;          
+               rif.maskReg= '0;          
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEALLMASKREG)
               begin 
-               maskReg[3:0] <= ioDataBuf[3:0];  
+               rif.maskReg[3:0] <= ioDataBuf[3:0];  
               end        
           else 
-              maskReg <= maskReg ;
+              rif.maskReg <= rif.maskReg ;
           end
                   
                        
@@ -533,21 +526,21 @@ always_ff@(posedge dma_if.CLK)
 always_ff@(posedge dma_if.CLK)
         begin
 
-                 statusReg[0] <= (cif.TC[0])?1'b1:1'b0;
-                 statusReg[1] <= (cif.TC[1])?1'b1:1'b0;
-                 statusReg[2] <= (cif.TC[2])?1'b1:1'b0;
-                 statusReg[3] <= (cif.TC[3])?1'b1:1'b0;  
-                 statusReg[4] <= (cif.valid_DREQ[0])?1'b1:1'b0;  
-                 statusReg[5] <= (cif.valid_DREQ[1])?1'b1:1'b0; 
-                 statusReg[6] <= (cif.valid_DREQ[2])?1'b1:1'b0; 
-                 statusReg[7] <= (cif.valid_DREQ[3])?1'b1:1'b0; 
+                 rif.statusReg[0] <= (cif.TC[0])?1'b1:1'b0;
+                 rif.statusReg[1] <= (cif.TC[1])?1'b1:1'b0;
+                 rif.statusReg[2] <= (cif.TC[2])?1'b1:1'b0;
+                 rif.statusReg[3] <= (cif.TC[3])?1'b1:1'b0;  
+                 rif.statusReg[4] <= (cif.valid_DREQ[0])?1'b1:1'b0;  
+                 rif.statusReg[5] <= (cif.valid_DREQ[1])?1'b1:1'b0; 
+                 rif.statusReg[6] <= (cif.valid_DREQ[2])?1'b1:1'b0; 
+                 rif.statusReg[7] <= (cif.valid_DREQ[3])?1'b1:1'b0; 
 
           if(dma_if.RESET||masterClear)
-             statusReg <= '0;
+             rif.statusReg <= '0;
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == READSTATUSREG)
-             ioDataBuf <= statusReg;
+             ioDataBuf <= rif.statusReg;
           else  
-             statusReg <= statusReg;
+             rif.statusReg <= rif.statusReg;
           
                        
         end       
@@ -581,9 +574,9 @@ always_ff@(posedge dma_if.CLK)
          begin
            
           if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == CLEARMASKREG)
-                      maskReg <= '0;
+                      rif.maskReg <= '0;
           else
-                      maskReg <= maskReg ;
+                      rif.maskReg <= rif.maskReg ;
 
         end  
 
@@ -616,4 +609,5 @@ always_ff@(posedge dma_if.CLK)
         end 
 
 endmodule
+
 
