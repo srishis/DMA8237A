@@ -1,10 +1,6 @@
 // DMA Timing Control module
 
 module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaRegIf.TC rif);
-
-input logic [7:0] rif.commandReg;
-input logic [5:0] rif.modeReg[4];
-input logic [7:0] rif.statusReg;
 	
 
  // index for each state in the state register
