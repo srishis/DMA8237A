@@ -11,7 +11,8 @@ DmaRegIf rif(CLK, RESET);
 // Datapath module
 DmaDatapath D1(
 		dp_if.DP, 
-		cif, rif
+		cif, 
+		rif.DP
 );
 	
 	
@@ -19,14 +20,13 @@ DmaDatapath D1(
 DmaTimingControl C1(
 		     dif.TC, 
 		     cif, 
-		     rif
+		     rif.TC
 );
 
 // Priority logic
 DmaPriority P1(
 		dif.PR,
-		rif
-	
+		rif.PR
 );
 
 
