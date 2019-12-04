@@ -531,10 +531,10 @@ always_ff@(posedge dif.CLK)
                  rif.statusReg[1] <= (TC[1])?1'b1:1'b0;
                  rif.statusReg[2] <= (TC[2])?1'b1:1'b0;
                  rif.statusReg[3] <= (TC[3])?1'b1:1'b0;  
-                 rif.statusReg[4] <= (cif.VALID_DREQ[0])?1'b1:1'b0;  
-                 rif.statusReg[5] <= (cif.VALID_DREQ[1])?1'b1:1'b0; 
-                 rif.statusReg[6] <= (cif.VALID_DREQ[2])?1'b1:1'b0; 
-                 rif.statusReg[7] <= (cif.VALID_DREQ[3])?1'b1:1'b0; 
+                 rif.statusReg[4] <= (cif.VALID_DREQ0)?1'b1:1'b0;  
+                 rif.statusReg[5] <= (cif.VALID_DREQ1)?1'b1:1'b0; 
+                 rif.statusReg[6] <= (cif.VALID_DREQ2)?1'b1:1'b0; 
+                 rif.statusReg[7] <= (cif.VALID_DREQ3)?1'b1:1'b0; 
 
           if(dif.RESET||masterClear)
              rif.statusReg <= '0;
