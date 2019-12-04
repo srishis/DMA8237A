@@ -3,7 +3,7 @@
 //-------------------------------------------------
 
 
-module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif); 
+module DmaPriority(dma_if.PR dif, DmaDatapathIf.PRIORITY rif); 
 	
 	logic validDREQ; 
 	logic [3:0] pencoderOut;
