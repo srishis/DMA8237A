@@ -71,8 +71,8 @@ interface dma_if(input logic CLK, RESET);
 			input   HLDA,
 		   	output  IOR_N,
 			output  IOW_N,
-			output 	MEMR_N;		
-			output 	MEMW_N;		
+			output 	MEMR_N,	
+			output 	MEMW_N,		
 			input   CS_N,
 			inout   EOP_N,
 			output  AEN,
