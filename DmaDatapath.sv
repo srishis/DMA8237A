@@ -44,14 +44,14 @@ localparam MASTERCLEARREG                = 8'b10101101;
 
 
 // Data bus logic
-  always_ff@(posedge dif.CLK) if(!dif.HLDA && !dif.IOW_N) ioDataBuf <= dif.DB;   
-  always_comb dif.DB = (!dif.HLDA && ~dif.IOR_N) ? ioDataBuf : 8'bz;
+  always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
+  always_comb dif.DB = (!dif.CS_N && ~dif.IOR_N) ? ioDataBuf : 8'bz;
 
 // Address Bus logic
 
-  always_ff@(posedge dif.CLK) if(!dif.HLDA) ioAddrBuf <= dif.ADDR_L;  
-  always_comb dif.ADDR_U = (dif.HLDA) ? outAddrBuf : 4'bz;  
-  always_comb dif.ADDR_L = (dif.HLDA) ? ioAddrBuf : 4'bz;
+  always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
+  always_comb dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
+  always_comb dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
 
 
 // DMA Registers logic
