@@ -56,7 +56,7 @@ interface dma_if(input logic CLK, RESET);
 			output ADDR_U,
 			output AEN,
 			output ADSTB
-	):
+	);
 	
 	// modport for Priority logic
 	modport PR(
