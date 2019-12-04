@@ -7,7 +7,7 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 	
 	logic validDREQ; 
 	logic [3:0] pencoderOut;
-	logic rotatingPripority, enFixedPriority, enRotatingPriority;
+	logic enFixedPriority, enRotatingPriority;
 	 
 // decoding registers for valid cif.DREQ
 
@@ -56,7 +56,7 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 		else if(rif.commandReg[6] && cif.CH3_SEL && !cif.CH3_MASK) cif.DREQ3_ACTIVE_LOW = 1;
 		else begin cif.DREQ3_ACTIVE_HIGH = 0; cif.DREQ3_ACTIVE_LOW = 0; end  		   		
 
-		// cif.DACK polarity
+		// DACK polarity
 		if(!rif.commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK)     cif.DACK0_ACTIVE_HIGH = 1;
 		else if(rif.commandReg[7] && cif.CH0_SEL && !cif.CH0_MASK) cif.DACK0_ACTIVE_LOW = 1;
 		else begin cif.DACK0_ACTIVE_HIGH = 0; cif.DACK0_ACTIVE_LOW = 0; end  		   		
@@ -75,7 +75,7 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 		
 	end
 	
-	// Valid cif.DREQ
+	// Valid DREQ
 	always_ff@(posedge dma_if.CLK) begin
 		if((cif.DREQ0_ACTIVE_HIGH && dif.DREQ[0]) || (cif.DREQ0_ACTIVE_LOW  && !dif.DREQ[0]))   cif.VALID_DREQ0 <= 1;
 		else					  					        cif.VALID_DREQ0 <= 0;	
@@ -110,10 +110,10 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 		else if(!cif.validDACK && cif.VALID_DACK3 && cif.DACK0_ACTIVE_LOW)      dif.DACK[3] <= 1;
 	end
 	
-	// check for any valid requests on cif.DREQ lines	
+	// check for any valid requests on DREQ lines	
 	always_comb begin
 		if(cif.VALID_DREQ0 || cif.VALID_DREQ1 || cif.VALID_DREQ2 || cif.VALID_DREQ3) validDREQ = 1;
-		else						       	     validDREQ = 0;
+		else						       	                     validDREQ = 0;
 	end
 
 	// HRQ output
@@ -125,7 +125,7 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 		else if(validDREQ && !rif.commandReg[4])  enFixedPriority <= 1;
 	end
 	
-	// Fixed priority encoder
+	// priority encoder
 	always_comb begin
 		pencoderOut = '0;
 		if(enFixedPriority)
@@ -151,7 +151,7 @@ module DmaPriority(dma_if.DUT dif, DmaDatapathIf.PRIORITY rif);
 	end                                                     
 
 	
-	// TODO: Rotating priority logic 
+	// Rotating priority logic 
 	always_ff@(posedge dma_if.CLK) begin
 		if(dma_if.RESET) {cif.CH0_PRIORITY, cif.CH1_PRIORITY, cif.CH2_PRIORITY, cif.CH3_PRIORITY} <= {8'b11100100}; // by default cif.CH0 - highest and cif.CH3 - lowest priority
 		else {cif.CH0_PRIORITY, cif.CH1_PRIORITY, cif.CH2_PRIORITY, cif.CH3_PRIORITY} <= {cif.NEXT_CH0_PRIORITY, cif.NEXT_CH1_PRIORITY, cif.NEXT_CH2_PRIORITY, cif.NEXT_CH3_PRIORITY};
