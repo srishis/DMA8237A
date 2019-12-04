@@ -1,7 +1,26 @@
-// DMA Timing Control module
-
-module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaRegIf.TC rif);
+module DmaTimingControl(dma_if.TC dif, DmaControlIf.TC cif,  DmaRegIf.TC rif);
 	
+// FSM control outputs
+logic eop;		
+logic aen;		
+logic adstb;		
+logic ior;		
+logic iow;
+logic memr;		
+logic memw;	
+logic hrq;
+logic writeExtend;
+logic checkWriteExtend;
+logic checkEOP;
+logic checkReadWrite;
+
+logic ldCurrAddrTemp; 
+logic ldCurrWordTemp; 
+logic enCurrAddr; 
+logic enCurrWord; 
+logic ldtempCurrAddr; 
+logic ldtempCurrWord; 
+
 
  // index for each state in the state register
  enum logic [2:0] {
@@ -24,26 +43,26 @@ module DmaTimingControl(dma_if.TC dif, DmaControlIf cif, DmaRegIf.TC rif);
   	} state, nextstate;
 	
 // IO Read logic
-  always_comb dif.IOR_N = (dif.CS_N) ? cif.ior : 1'bz; // access data from peripheral during DMA write transfer
+  always_comb dif.IOR_N = (dif.CS_N) ? ior : 1'bz; // access data from peripheral during DMA write transfer
 
 // IO Write logic
 
-  always_comb dif.IOW_N = (dif.CS_N) ? cif.iow : 1'bz; // load data to peripheral during DMA read transfer
+  always_comb dif.IOW_N = (dif.CS_N) ? iow : 1'bz; // load data to peripheral during DMA read transfer
 
 // MEM Read logic
-  always_comb dif.MEMR_N = (dif.CS_N) ? cif.memr : 1'bz; // access data from peripheral during DMA write transfer
+  always_comb dif.MEMR_N = (dif.CS_N) ? memr : 1'bz; // access data from peripheral during DMA write transfer
 
 // MEM Write logic
 
-  always_comb dif.MEMW_N = (dif.CS_N) ? cif.memw : 1'bz; // load data to peripheral during DMA read transfer
+  always_comb dif.MEMW_N = (dif.CS_N) ? memw : 1'bz; // load data to peripheral during DMA read transfer
 
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
-  always_comb dif.EOP_N = (dif.CS_N) ? cif.eop : 1'bz;
+  always_comb dif.EOP_N = (dif.CS_N) ? eop : 1'bz;
 
 // AEN & ADSTB functionality
-  always_comb dif.AEN <= cif.aen; 
-  always_comb dif.ADSTB <= cif.adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched
+  always_comb dif.AEN <= aen; 
+  always_comb dif.ADSTB <= adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched
 
 // Initial state condition
 always_ff @(posedge dif.CLK)    if(dif.RESET || !dif.CS_N)  state <= SI;
@@ -58,28 +77,28 @@ end
 
 // Write extend & Read or Write operation
 always_comb begin
-if(cif.checkWriteExtend)
+if(checkWriteExtend)
 	if (rif.commandReg[5] == 1'b1 && rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0)
-		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
-	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
+		begin memw = 1'b0; ior = 1'b0; end   
+	else    begin memw = 1'b1; ior = 1'b1; end   
 
-else if(cif.checkWrite)
+else if(checkWrite)
 	if(rif.modeReg[0][3:2] == 2'b01 || rif.modeReg[1][3:2] == 2'b01 || rif.modeReg[2][3:2] == 2'b01 || rif.modeReg[3][3:2] == 2'b01 && rif.commandReg[0] == 1'b0) 
-		begin cif.memw = 1'b0; cif.ior = 1'b0; end   
-	else    begin cif.memw = 1'b1; cif.ior = 1'b1; end   
+		begin memw = 1'b0; ior = 1'b0; end   
+	else    begin memw = 1'b1; ior = 1'b1; end   
 	
-else if(cif.checkRead)
+else if(checkRead)
 	if(rif.modeReg[0][3:2] == 2'b10 || rif.modeReg[1][3:2] == 2'b10 || rif.modeReg[2][3:2] == 2'b10 || rif.modeReg[3][3:2] == 2'b10 && rif.commandReg[0] == 1'b0)    			
-		begin cif.memr = 1'b0; cif.iow = 1'b0; end   
-	else    begin cif.memr = 1'b1; cif.iow = 1'b1; end   
+		begin memr = 1'b0; iow = 1'b0; end   
+	else    begin memr = 1'b1; iow = 1'b1; end   
 end
 
 // End of process by terminal count 
 always_comb begin
-if(cif.checkEOP )
-	if(rif.statusReg[3:0]) cif.eop = 1'b0;  
-	else		       cif.eop = 1'b1;
-else			       cif.eop = 1'b1;
+if(checkEOP )
+	if(rif.statusReg[3:0]) eop = 1'b0;  
+	else		       eop = 1'b1;
+else			       eop = 1'b1;
 end
 
 // Next state logic
@@ -129,7 +148,7 @@ end
 always_comb begin 
 
 // default values for control outputs
-{cif.aen, cif.adstb, cif.checkEOP, cif.checkRead, cif.checkWrite, cif.checkWriteExtend} = 8'b000000;  
+{aen, adstb, checkEOP, checkRead, checkWrite, checkWriteExtend} = 8'b000000;  
 {cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 5'b00000; 
 cif.validDACK = 1'b0;    		 
 
@@ -139,19 +158,18 @@ cif.validDACK = 1'b0;
 
 	    state[iS0]: begin  cif.hrq = 1'b1; end
 				
-	    state[iS1]: begin  cif.aen = 1'b1; cif.adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
+	    state[iS1]: begin  aen = 1'b1; adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         
-	    state[iS2]: begin  cif.aen = 1'b1; cif.adstb = 1'b0; cif.checkRead = 1'b1; cif.hrq = 1'b1; cif.checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
+	    state[iS2]: begin  aen = 1'b1; adstb = 1'b0; checkRead = 1'b1; cif.hrq = 1'b1; checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
 				
 
-	    state[iS3]: begin cif.aen = 1'b1; cif.checkWrite = 1'b1; cif.hrq = 1'b1; end
+	    state[iS3]: begin aen = 1'b1; checkWrite = 1'b1; cif.hrq = 1'b1; end
 		
 	    state[iS4]: begin  cif.ldTempCurrAddr= 1'b0; cif.ldTempCurrWord = 1'b0; cif.validDACK = 1'b0;
-			       cif.checkEOP = 1'b1; {cif.hrq, cif.aen} = 2'b00;
+			       checkEOP = 1'b1; {cif.hrq, aen} = 2'b00;
 			end
 					
     endcase
 end
 				 
 endmodule
-
