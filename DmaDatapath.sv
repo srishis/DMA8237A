@@ -1,4 +1,5 @@
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, ioAddrBuf, ioDataBuf, outAddrBuf, readBuf, writeBuf, currAddrReg, currWordReg, baseAddrReg, baseWordReg, modeReg, commandReg, requestReg, maskReg, tempReg, tempAddrReg, tempWordReg, statusReg);
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif, currAddrReg, currWordReg, baseAddrReg, baseWordReg, modeReg, 
+		   commandReg, requestReg, maskReg, tempReg, tempAddrReg, tempWordReg, statusReg);
 
 // DMA Registers declaration
 
