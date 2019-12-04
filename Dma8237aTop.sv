@@ -10,6 +10,7 @@ logic [5:0]  modeReg[4];
 logic [7:0]  commandReg;
 logic [7:0]  requestReg;
 logic [7:0]  maskReg;
+logic [7:0]  statusReg;
 
 // DMA modules instantiation
 // Datapath module
@@ -28,7 +29,8 @@ DmaTimingControl C1(
 		     dif.TC, 
 		     cif, 
 		     modeReg,
-		     commandReg
+		     commandReg,
+		     statusReg
 );
 
 // Priority logic
