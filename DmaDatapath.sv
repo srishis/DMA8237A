@@ -1,6 +1,6 @@
 // DMA Data path module with register definitions
 
-module DmaDatapath(dma_if.DP dif, DmaControlIf cif, DmaRegIf rif);
+module DmaDatapath(dma_if.DP dif, DmaControlIf cif, DmaRegIf.DP rif);
 
 // internal registers
 logic [15:0] currAddrReg[4];
