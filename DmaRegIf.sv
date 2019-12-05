@@ -1,3 +1,5 @@
+// Interface for DMA Registers 
+
 interface DmaRegIf(input logic CLK, RESET);
 
 // DMA Registers
