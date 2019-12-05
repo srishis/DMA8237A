@@ -50,6 +50,8 @@ interface dma_if(input logic CLK, RESET);
 	
 	// modport for Datapath
 	modport DP(
+			input  CLK,
+			input  RESET,
 			input  IOR_N,
 			input  IOW_N,
 			input  CS_N,
@@ -60,6 +62,8 @@ interface dma_if(input logic CLK, RESET);
 	
 	// modport for Priority logic
 	modport PR(
+			input  CLK,
+			input  RESET,
 			output DACK,
 			output HRQ,	
 			input  DREQ,
@@ -68,6 +72,8 @@ interface dma_if(input logic CLK, RESET);
 	
 	// modport for Timing Control logic
 	modport TC(
+			input   CLK,
+			input   RESET,
 			input   HLDA,
 		   	output  IOR_N,
 			output  IOW_N,
