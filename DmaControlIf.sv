@@ -1,10 +1,11 @@
+//  DMA Timing and Control module interface 
+
 interface DmaControlIf(input logic CLK, RESET);    
 
 logic hrq;
 logic ldCurrAddrTemp; 
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
-logic enCurrWord; 
 logic ldTempCurrAddr; 
 logic ldTempCurrWord; 
 logic Program;
@@ -25,8 +26,7 @@ modport DP(
 	    input VALID_DREQ3,
 	    input ldCurrAddrTemp, 
 	    input ldCurrWordTemp, 
-	    input enCurrAddr, 
-	    input enCurrWord, 
+	    input enCurrAddr,  
 	    input ldTempCurrAddr, 
 	    input ldTempCurrWord, 
 	    input Program
@@ -43,7 +43,6 @@ modport TC(
 	    output ldCurrAddrTemp, 
 	    output ldCurrWordTemp, 
 	    output enCurrAddr, 
-	    output enCurrWord, 
 	    output ldTempCurrAddr, 
 	    output ldTempCurrWord, 
 	    output Program,
