@@ -1,3 +1,4 @@
+// DMA Priority Module 
 module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif); 
 
 	
