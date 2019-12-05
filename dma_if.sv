@@ -26,27 +26,6 @@ interface dma_if(input logic CLK, RESET);
 	
 	// EOP signal
 	wire 	    EOP_N;		// bi-directional signal to end DMA active transfers
-
-
-	// modport for design top
-	modport DUT(
-			inout  IOR_N,
-			inout  IOW_N,
-			inout  DB,
-			inout  ADDR_L,
-
-			inout  EOP_N,
-
-			input  DREQ,
-			input  HLDA,
-			input  CS_N,
-
-			output ADDR_U,
-			output DACK,
-			output HRQ,
-			output AEN,
-			output ADSTB
-	       	);
 	
 	// modport for Datapath
 	modport DP(
