@@ -17,6 +17,8 @@ logic VALID_DREQ2;
 logic VALID_DREQ3;
 
 modport DP(
+	    input CLK,
+	    input RESET,
 	    input VALID_DREQ0,
 	    input VALID_DREQ1,
 	    input VALID_DREQ2,
@@ -31,10 +33,12 @@ modport DP(
 );
 
 modport TC(
-	    input VALID_DREQ0,
-	    input VALID_DREQ1,
-	    input VALID_DREQ2,
-	    input VALID_DREQ3,
+	    input  CLK,
+	    input  RESET,
+	    input  VALID_DREQ0,
+	    input  VALID_DREQ1,
+	    input  VALID_DREQ2,
+	    input  VALID_DREQ3,
 	    output hrq,
 	    output ldCurrAddrTemp, 
 	    output ldCurrWordTemp, 
@@ -46,8 +50,10 @@ modport TC(
 	    output validDACK
 );
 modport PR(
-	    input hrq,
-	    input validDACK,
+	    input  CLK,
+	    input  RESET,
+	    input  hrq,
+	    input  validDACK,
 	    output VALID_DREQ0,
 	    output VALID_DREQ1,
 	    output VALID_DREQ2,
