@@ -9,7 +9,8 @@ interface DmaRegIf(input logic CLK, RESET);
 
 
 modport DP(
-	
+ input  CLK,
+ input  RESET,	
  output modeReg,
  output commandReg,
  output requestReg,
@@ -19,12 +20,16 @@ modport DP(
 );
 
 modport TC(
+ input  CLK,
+ input  RESET,
  input modeReg,
  input commandReg,
  input statusReg
 );
 
 modport PR(
+ input  CLK,
+ input  RESET,
  input commandReg,
  input requestReg,
  input maskReg
