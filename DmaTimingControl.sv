@@ -1,3 +1,6 @@
+// DMA Timing Contol Module 
+
+
 module DmaTimingControl(dma_if.TC dif, DmaControlIf.TC cif,  DmaRegIf.TC rif);
 	
 // FSM control outputs
@@ -9,7 +12,6 @@ logic iow;
 logic memr;		
 logic memw;	
 logic hrq;
-//logic writeExtend;
 logic checkWriteExtend;
 logic checkEOP;
 logic checkRead;
@@ -17,7 +19,6 @@ logic checkWrite;
 logic ldCurrAddrTemp; 
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
-//logic enCurrWord; 
 logic ldTempCurrAddr; 
 logic ldTempCurrWord; 
 
@@ -43,19 +44,17 @@ logic ldTempCurrWord;
   	} state, nextstate;
 	
 // IO Read logic
-  assign dif.IOR_N = (dif.HLDA) ? ior : 1'bz; // access data from peripheral during DMA write transfer
+	assign dif.IOR_N = (dif.HLDA) ? ior : 1'bz;       // access data from peripheral during DMA write transfer
 
 // IO Write logic
-
-   // load data to peripheral during DMA read transfer
-   assign dif.IOW_N = (dif.HLDA) ? iow : 1'bz;
+	assign dif.IOW_N = (dif.HLDA) ? iow : 1'bz;       // load data to peripheral during DMA read transfer
+	
 // MEM Read logic
-  // access data from peripheral during DMA write transfer
-  assign  dif.MEMR_N = (dif.HLDA) ? memr : 1'bz;
+	assign  dif.MEMR_N = (dif.HLDA) ? memr : 1'bz;   // access data from peripheral during DMA write transfer
+	
 // MEM Write logic
-
-   // load data to peripheral during DMA read transfer
-  assign dif.MEMW_N = (dif.HLDA) ? memw : 1'bz; 
+	assign dif.MEMW_N = (dif.HLDA) ? memw : 1'bz;   // load data to peripheral during DMA read transfer
+	
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
   assign dif.EOP_N = (dif.HLDA) ? eop : 1'bz;
@@ -66,13 +65,13 @@ logic ldTempCurrWord;
 
 // Initial state condition
 always_ff @(posedge dif.CLK)    if(dif.RESET || !dif.CS_N)  state <= SI;
-else		             			                  state <= nextstate;
+else		             			            state <= nextstate;
    
-// TODO: Try to remove HLDA for Program condition
+
 // Program bit for DMA registers
 always_comb begin
-if(!dif.CS_N && !dif.HLDA)           cif.Program = 1; 
-else if(dif.CS_N && dif.HLDA) cif.Program = 0;
+if(!dif.CS_N && !dif.HLDA)      cif.Program = 1; 
+else if(dif.CS_N && dif.HLDA)  cif.Program = 0;
 end
 
 // Write extend & Read or Write operation
