@@ -18,8 +18,8 @@ logic ldCurrAddrTemp;
 logic ldCurrWordTemp; 
 logic enCurrAddr; 
 logic enCurrWord; 
-logic ldtempCurrAddr; 
-logic ldtempCurrWord; 
+logic ldTempCurrAddr; 
+logic ldTempCurrWord; 
 
 
  // index for each state in the state register
