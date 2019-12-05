@@ -48,14 +48,12 @@ localparam MASTERCLEARREG                = 8'b10101101;
   assign dif.DB = (!dif.CS_N && ~dif.IOR_N) ? ioDataBuf : 8'bz;
   
 // Address Bus logic
-
   always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
   assign dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
- 
-assign dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
+  assign dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
+	
 
 // DMA Registers logic
-
 //Base Address Register
 always_ff@(posedge dif.CLK) begin
  
@@ -74,6 +72,7 @@ always_ff@(posedge dif.CLK) begin
                       else
                         baseAddrReg[0][7:0] <= writeBuf;
                   end
+	
 //the command code for Writing the base and current register -> base Address Reg 1
           else if({cif.Program,dif.CS_N,dif.IOR_N,dif.IOW_N,ioAddrBuf} == WRITEBASECURRADDR[1])
                   begin
@@ -113,7 +112,6 @@ always_ff@(posedge dif.CLK) begin
 
 
 //Base Word Register
-
 always_ff@(posedge dif.CLK)
       begin
           if(dif.RESET||masterClear)
