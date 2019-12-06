@@ -24,7 +24,7 @@ logic ldTempCurrWord;
 
 
  // index for each state in the state register
- enum logic [2:0] {
+ enum logic {
   	iSI   = 0,
   	iS0   = 1,
   	iS1   = 2,
@@ -49,11 +49,13 @@ always_ff@(posedge dif.CLK) begin
   if(dif.RESET) begin
   	dif.AEN    <= '0;
   	dif.ADSTB  <= '0;
+	state      <= SI;       // Initial FSM state
   end
   else begin
 // AEN & ADSTB functionality
   	dif.AEN    <= aen;
   	dif.ADSTB  <= adstb;
+	state      <= nextstate;
   end
 end
 
@@ -72,12 +74,7 @@ end
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
   assign dif.EOP_N = (dif.HLDA) ? eop : 1'bz;
-
-// Initial FSM state condition
-always_ff @(posedge dif.CLK)    if(dif.RESET || !dif.CS_N)  state <= SI;
-else		             			            state <= nextstate;
    
-
 // Program condition for DMA registers
 always_comb begin
 if(!dif.CS_N && !dif.HLDA)      cif.Program = 1; 
