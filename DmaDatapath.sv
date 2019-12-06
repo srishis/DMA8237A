@@ -12,13 +12,13 @@ logic [7:0]  tempAddrReg;
 logic [7:0]  tempWordReg;
 
 logic TC[4];
+logic [3:0] addru;
+logic [7:0] data;	
 
 // Datapath Buffers
 logic [3:0] ioAddrBuf;      
 logic [3:0] outAddrBuf;      
-logic [7:0] ioDataBuf;  
-	
-// Read Write Buffers
+logic [7:0] ioDataBuf;  	
 logic [7:0] readBuf;
 logic [7:0] writeBuf;
 	
@@ -27,7 +27,7 @@ logic masterClear;
 logic FF;
 
 // TODO: Put SW commands in package.
-// DMA Registers SW commands
+// DMA Registers SW command codes
 localparam [7:0] READCURRADDR[4]         = {8'b10010000,8'b10010010,8'b10010100,8'b10010110};
 localparam [7:0] WRITEBASECURRADDR[4]    = {8'b10100000,8'b10100010,8'b10100100,8'b10100110};
 localparam [7:0] WRITEBASECURRCOUNT[4]   = {8'b10100001,8'b10100011,8'b10100101,8'b10100111};
@@ -56,8 +56,8 @@ if(dif.RESET) begin
 	writeBuf   <= '0;
 end
 else
-	dif.DB     <= dif.DB;
-	dif.ADDR_U <= dif.ADDR_U;
+	dif.DB     <= data;
+	dif.ADDR_U <= addru;
 	ioAddrBuf  <= ioAddrBuf;
 	ioDataBuf  <= ioDataBuf;
 	outAddrBuf <= outAddrBuf;
@@ -66,13 +66,13 @@ else
 end
 
 // Data bus logic
-  always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
-  assign dif.DB = ((dif.CS_N == '0) && (dif.IOR_N == '0)) ? ioDataBuf : 8'bz;
+  always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= data;   
+  assign data = ((dif.CS_N == '0) && (dif.IOR_N == '0)) ? ioDataBuf : 8'bz;
   
 // Address Bus logic
   always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
   assign dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
-  assign dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
+  assign addru = (dif.CS_N) ? outAddrBuf : 4'bz;  
 	
 
 // DMA Registers logic
