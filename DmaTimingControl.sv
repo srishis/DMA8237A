@@ -42,36 +42,46 @@ logic ldTempCurrWord;
   	S3   = 6'b000001 << iS3, 
   	S4   = 6'b000001 << iS4 
   	} state, nextstate;
+
 	
+// Reset condition
+always_ff@(posedge dif.CLK) begin
+  if(dif.RESET) begin
+  	dif.AEN    <= '0;
+  	dif.ADSTB  <= '0;
+  end
+  else begin
+// AEN & ADSTB functionality
+  	dif.AEN    <= aen;
+  	dif.ADSTB  <= adstb;
+  end
+end
+
 // IO Read logic
-	assign dif.IOR_N = (dif.HLDA) ? ior : 1'bz;       // access data from peripheral during DMA write transfer
+  assign dif.IOR_N = (dif.HLDA) ? ior : 1'bz;       // access data from peripheral during DMA write transfer
 
 // IO Write logic
-	assign dif.IOW_N = (dif.HLDA) ? iow : 1'bz;       // load data to peripheral during DMA read transfer
+  assign dif.IOW_N = (dif.HLDA) ? iow : 1'bz;       // load data to peripheral during DMA read transfer
 	
 // MEM Read logic
-	assign  dif.MEMR_N = (dif.HLDA) ? memr : 1'bz;   // access data from peripheral during DMA write transfer
+  assign  dif.MEMR_N = (dif.HLDA) ? memr : 1'bz;   // access data from peripheral during DMA write transfer
 	
 // MEM Write logic
-	assign dif.MEMW_N = (dif.HLDA) ? memw : 1'bz;   // load data to peripheral during DMA read transfer
+  assign dif.MEMW_N = (dif.HLDA) ? memw : 1'bz;   // load data to peripheral during DMA read transfer
 	
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
   assign dif.EOP_N = (dif.HLDA) ? eop : 1'bz;
 
-// AEN & ADSTB functionality
-  always_comb dif.AEN <= aen; 
-  always_comb dif.ADSTB <= adstb;  // when we make ADSTB = 1, MSB address from data lines DB is latched
-
-// Initial state condition
+// Initial FSM state condition
 always_ff @(posedge dif.CLK)    if(dif.RESET || !dif.CS_N)  state <= SI;
 else		             			            state <= nextstate;
    
 
-// Program bit for DMA registers
+// Program condition for DMA registers
 always_comb begin
 if(!dif.CS_N && !dif.HLDA)      cif.Program = 1; 
-else if(dif.CS_N && dif.HLDA)  cif.Program = 0;
+else if(dif.HLDA)               cif.Program = 0;
 end
 
 // Write extend & Read or Write operation
@@ -92,12 +102,10 @@ else if(checkRead)
 	else    begin memr = 1'b1; iow = 1'b1; end   
 end
 
-// End of process by terminal count 
+// End of process on terminal count 
 always_comb begin
-if(checkEOP )
-	if(rif.statusReg[3:0]) eop = 1'b0;  
-	else		       eop = 1'b1;
-else			       eop = 1'b1;
+if(checkEOP && rif.statusReg[3:0]) eop = 1'b0;  
+else		                   eop = 1'b1;
 end
 
 // Next state logic
@@ -146,10 +154,9 @@ end
 // Output logic
 always_comb begin 
 
-// default values for control outputs
-{aen, adstb, checkEOP, checkRead, checkWrite, checkWriteExtend} = 8'b000000;  
-{cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr} = 5'b00000; 
-cif.validDACK = 1'b0;    		 
+// default values for FSM control outputs
+{aen, adstb, checkEOP, checkRead, checkWrite, checkWriteExtend} = 6'b000000;  
+{cif.ldCurrAddrTemp, cif.ldCurrWordTemp, cif.ldTempCurrAddr, cif.ldTempCurrWord, cif.enCurrAddr, cif.validDACK} = 6'b000000;   		 
 
     unique case(1'b1)  // reverse case
 
