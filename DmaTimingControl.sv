@@ -24,7 +24,7 @@ logic ldTempCurrWord;
 
 
  // index for each state in the state register
- enum logic {
+ enum {
   	iSI   = 0,
   	iS0   = 1,
   	iS1   = 2,
@@ -176,3 +176,4 @@ always_comb begin
 end
 				 
 endmodule
+
