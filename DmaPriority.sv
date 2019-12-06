@@ -55,6 +55,7 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 		dif.HRQ   <= cif.hrq;
 		dif.DACK  <= dack;  
 	end
+	end
 		
 	// decoding registers for valid DREQ
 	// decode Request register	
