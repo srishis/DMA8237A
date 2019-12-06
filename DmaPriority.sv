@@ -1,9 +1,10 @@
 // DMA Priority Module 
-module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif); 
 
+
+module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif); 
 	
 	logic validDREQ; 
-	logic [3:0] pencoderOut;
+	logic [3:0] pencoderOut, dack;
 	logic enFixedPriority, enRotatingPriority;
 
 	logic DREQ0_ACTIVE_HIGH; 
@@ -42,9 +43,20 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 	logic [1:0] NEXT_CH1_PRIORITY;
 	logic [1:0] NEXT_CH2_PRIORITY;
 	logic [1:0] NEXT_CH3_PRIORITY; 
-		 
-// decoding registers for valid DREQ
 
+	// Reset condition
+	always_ff@(posedge dif.CLK) begin
+		if(dif.RESET) begin
+		dif.HRQ  <= '0; 
+		dif.DACK <= '1;
+	end
+	else begin
+	// HRQ and DACK outputs
+		dif.HRQ   <= cif.hrq;
+		dif.DACK  <= dack;  
+	end
+		
+	// decoding registers for valid DREQ
 	// decode Request register	
 	always_comb begin
 		if(rif.requestReg[1:0] == 2'b00 && rif.requestReg[2]) 	        CH0_SEL = 1;
@@ -112,37 +124,37 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 	// Valid DREQ
 	always_ff@(posedge dif.CLK) begin
 		if((DREQ0_ACTIVE_HIGH && dif.DREQ[0]) || (DREQ0_ACTIVE_LOW  && !dif.DREQ[0]))   cif.VALID_DREQ0 <= 1;
-		else					  					        cif.VALID_DREQ0 <= 0;	
+		else					  					cif.VALID_DREQ0 <= 0;	
 		if((DREQ0_ACTIVE_HIGH && dif.DREQ[1]) || (DREQ0_ACTIVE_LOW  && !dif.DREQ[1]))   cif.VALID_DREQ1 <= 1;
-		else					 				                cif.VALID_DREQ1 <= 0;	
+		else					 				        cif.VALID_DREQ1 <= 0;	
 		if((DREQ0_ACTIVE_HIGH && dif.DREQ[2]) || (DREQ0_ACTIVE_LOW  && !dif.DREQ[2]))   cif.VALID_DREQ2 <= 1;
-		else					       					        cif.VALID_DREQ2 <= 0;	
+		else					       					cif.VALID_DREQ2 <= 0;	
 		if((DREQ0_ACTIVE_HIGH && dif.DREQ[3]) || (DREQ0_ACTIVE_LOW  && !dif.DREQ[3]))   cif.VALID_DREQ3 <= 1;
-		else					  					        cif.VALID_DREQ3 <= 0;	
+		else					  					cif.VALID_DREQ3 <= 0;	
 	end
 
 	// DACK output 
-	always_ff@(posedge dif.CLK) begin
-		if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH) 	    	dif.DACK[0] <= 1;
-		else if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)       dif.DACK[0] <= 0;
-		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH)     dif.DACK[0] <= 0;
-		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)      dif.DACK[0] <= 1;
+        always_ff@(posedge dif.CLK) begin
+		if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH) 	    	dack[0] <= 1;
+		else if(cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)       dack[0] <= 0;
+		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_HIGH)     dack[0] <= 0;
+		else if(!cif.validDACK && VALID_DACK0 && DACK0_ACTIVE_LOW)      dack[0] <= 1;
 
-		if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_HIGH) 	    	dif.DACK[1] <= 1;
-		else if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_LOW)       dif.DACK[1] <= 0;
-		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_HIGH)     dif.DACK[1] <= 0;
-		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_LOW)      dif.DACK[1] <= 1;
+		if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_HIGH) 	    	dack[1] <= 1;
+		else if(cif.validDACK && VALID_DACK1 && DACK1_ACTIVE_LOW)       dack[1] <= 0;
+		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_HIGH)     dack[1] <= 0;
+		else if(!cif.validDACK && VALID_DACK1 && DACK0_ACTIVE_LOW)      dack[1] <= 1;
 
-		if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_HIGH) 	    	dif.DACK[2] <= 1;
-		else if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_LOW)       dif.DACK[2] <= 0;
-		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_HIGH)     dif.DACK[2] <= 0;
-		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_LOW)      dif.DACK[2] <= 1;
+		if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_HIGH) 	    	dack[2] <= 1;
+		else if(cif.validDACK && VALID_DACK2 && DACK2_ACTIVE_LOW)       dack[2] <= 0;
+		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_HIGH)     dack[2] <= 0;
+		else if(!cif.validDACK && VALID_DACK2 && DACK0_ACTIVE_LOW)      dack[2] <= 1;
 
-		if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_HIGH) 	    	dif.DACK[3] <= 1;
-		else if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_LOW)       dif.DACK[3] <= 0;
-		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_HIGH)     dif.DACK[3] <= 0;
-		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_LOW)      dif.DACK[3] <= 1;
-	end
+		if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_HIGH) 	    	dack[3] <= 1;
+		else if(cif.validDACK && VALID_DACK3 && DACK3_ACTIVE_LOW)       dack[3] <= 0;
+		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_HIGH)     dack[3] <= 0;
+		else if(!cif.validDACK && VALID_DACK3 && DACK0_ACTIVE_LOW)      dack[3] <= 1;
+        end
 	
 	// check for any valid requests on DREQ lines	
 	always_comb begin
@@ -150,18 +162,15 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 		else						       	                     validDREQ = 0;
 	end
 
-	// HRQ output
-	always_comb dif.HRQ = cif.hrq;
-
-	// select priority encoding
+	// select priority encoding based on register configuration
 	always_comb begin
 		if(validDREQ && rif.commandReg[4]) 	      enRotatingPriority <= 1; 
-		else if(validDREQ && !rif.commandReg[4])  enFixedPriority <= 1;
+		else if(validDREQ && !rif.commandReg[4])      enFixedPriority    <= 1;
 	end
 	
 	// priority encoder
 	always_comb begin
-		pencoderOut = '0;
+		pencoderOut = '0;   // default value when no request on DREQ lines
 		if(enFixedPriority)
 			priority case(1'b1) // reverse case
 			 cif.VALID_DREQ0  : pencoderOut = 4'b0001; 	 
@@ -171,7 +180,7 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 			endcase
 
 		else if(enRotatingPriority)
-			if(CH0_PRIORITY == 2'b11) 	    pencoderOut = 4'b0001;
+			if(CH0_PRIORITY == 2'b11) 	pencoderOut = 4'b0001;
 			else if(CH1_PRIORITY == 2'b11)  pencoderOut = 4'b0010;
 			else if(CH2_PRIORITY == 2'b11)  pencoderOut = 4'b0100;
 			else if(CH3_PRIORITY == 2'b11)  pencoderOut = 4'b1000;
@@ -187,8 +196,11 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 	
 	// Rotating priority logic 
 	always_ff@(posedge dif.CLK) begin
-		if(dif.RESET) {CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {8'b11100100}; // by default CH0 - highest and CH3 - lowest priority
-		else {CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {NEXT_CH0_PRIORITY, NEXT_CH1_PRIORITY, NEXT_CH2_PRIORITY, NEXT_CH3_PRIORITY};
+		if(dif.RESET) begin
+			{CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {8'b11100100};  // by default CH0 - highest and CH3 - lowest priority
+			{NEXT_CH0_PRIORITY, NEXT_CH1_PRIORITY, NEXT_CH2_PRIORITY, NEXT_CH3_PRIORITY} <= '0;
+		end
+			else {CH0_PRIORITY, CH1_PRIORITY, CH2_PRIORITY, CH3_PRIORITY} <= {NEXT_CH0_PRIORITY, NEXT_CH1_PRIORITY, NEXT_CH2_PRIORITY, NEXT_CH3_PRIORITY};
 	end
 
 	always_ff@(posedge dif.CLK) begin
@@ -197,7 +209,5 @@ module DmaPriority(dma_if.PR dif, DmaControlIf.PR cif, DmaRegIf.PR rif);
 		else if(cif.VALID_DREQ2) begin NEXT_CH2_PRIORITY <= 2'b00; NEXT_CH0_PRIORITY <= CH0_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
 		else if(cif.VALID_DREQ3) begin NEXT_CH3_PRIORITY <= 2'b00; NEXT_CH0_PRIORITY <= CH0_PRIORITY + 1'b1; NEXT_CH2_PRIORITY <=  CH2_PRIORITY + 1'b1; NEXT_CH3_PRIORITY <=  CH3_PRIORITY + 1'b1; end
 	end
-
-		
 
 endmodule
