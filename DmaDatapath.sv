@@ -26,6 +26,7 @@ logic [7:0] writeBuf;
 logic masterClear;
 logic FF;
 
+// TODO: Put SW commands in package.
 // DMA Registers SW commands
 localparam [7:0] READCURRADDR[4]         = {8'b10010000,8'b10010010,8'b10010100,8'b10010110};
 localparam [7:0] WRITEBASECURRADDR[4]    = {8'b10100000,8'b10100010,8'b10100100,8'b10100110};
@@ -43,14 +44,35 @@ localparam CLEARMASKREG                  = 8'b10101110;
 localparam MASTERCLEARREG                = 8'b10101101;
 
 
+// Reset condition
+always_ff@(posedge dif.CLK)
+if(dif.RESET) begin			
+	dif.DB     <= '0;
+	dif.ADDR_U <= '0;
+	ioAddrBuf  <= '0;
+	ioDataBuf  <= '0;
+	outAddrBuf <= '0;
+	readBuf    <= '0;
+	writeBuf   <= '0;
+end
+else
+	dif.DB     <= dif.DB;
+	dif.ADDR_U <= dif.ADDR_U;
+	ioAddrBuf  <= ioAddrBuf;
+	ioDataBuf  <= ioDataBuf;
+	outAddrBuf <= outAddrBuf;
+	readBuf    <= readBuf;
+	writeBuf   <= writeBuf;
+end
+
 // Data bus logic
   always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
-  assign dif.DB = (!dif.CS_N && ~dif.IOR_N) ? ioDataBuf : 8'bz;
+  assign dif.DB = ((dif.CS_N == '0) && (dif.IOR_N == '0)) ? ioDataBuf : 8'bz;
   
 // Address Bus logic
   always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
-  assign dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
   assign dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
+  assign dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
 	
 
 // DMA Registers logic
