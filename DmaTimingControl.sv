@@ -23,7 +23,7 @@ logic ldTempCurrAddr;
 logic ldTempCurrWord; 
 
 
- // index for each state in the state register
+ // index for each state
  enum {
   	iSI   = 0,
   	iS0   = 1,
@@ -111,38 +111,38 @@ always_comb begin
         nextstate = state;      //default value for nextstate
               
         unique case(1'b1)       // reverse case       
-            state[iSI] :
-			begin
-			if(cif.VALID_DREQ0 || cif.VALID_DREQ1 || cif.VALID_DREQ2 || cif.VALID_DREQ3) 	nextstate = S0;
-			else  										nextstate = SI;
-			end
-			 
-            state[iS0] :
-			begin
-			if(dif.HLDA) 									nextstate = S1;
-			else if(!dif.HLDA) 								nextstate = S0;
-			else if(!dif.EOP_N) 								nextstate = SI;
-			end
-			
-            state[iS1] :
-			begin
-			if(!dif.EOP_N) 						        		nextstate = SI;
-			else										nextstate = S2;
-			end
-			
-            state[iS2] :  
-                        begin
-			if(!dif.EOP_N) 						          		nextstate = SI;
-                        else					  		                        nextstate = S3;
-                        end
+            state[iSI]:
+		       begin
+		       if(cif.VALID_DREQ0 || cif.VALID_DREQ1 || cif.VALID_DREQ2 || cif.VALID_DREQ3) 	nextstate = S0;
+		       else  										nextstate = SI;
+		       end
+		        
+            state[iS0]:
+		       begin
+		       if(dif.HLDA) 									nextstate = S1;
+		       else if(!dif.HLDA) 								nextstate = S0;
+		       else if(!dif.EOP_N) 								nextstate = SI;
+		       end
+		       
+            state[iS1]:
+		       begin
+		       if(!dif.EOP_N) 						        		nextstate = SI;
+		       else										nextstate = S2;
+		       end
+		       
+            state[iS2]:  
+                       begin
+		       if(!dif.EOP_N) 						          		nextstate = SI;
+                       else					  		                        nextstate = S3;
+                       end
 
-            state[iS3] :
-                        begin
-			if(!dif.EOP_N) 						        		nextstate = SI;
-			else										nextstate = S4;
-                        end 
-			
-            state[iS4] :										nextstate = SI;
+            state[iS3]:
+                       begin
+		       if(!dif.EOP_N) 						        		nextstate = SI;
+		       else										nextstate = S4;
+                       end 
+		       
+            state[iS4]:										        nextstate = SI;
  
 														
         endcase
@@ -157,18 +157,18 @@ always_comb begin
 
     unique case(1'b1)  // reverse case
 
-	    state[iSI]: begin  cif.hrq = 1'b0;  end
+	    state[iSI]   : begin  cif.hrq = 1'b0;  end
 
-	    state[iS0]: begin  cif.hrq = 1'b1; end
-				
-	    state[iS1]: begin  aen = 1'b1; adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
+	    state[iS0]   : begin  cif.hrq = 1'b1; end
+		           	
+	    state[iS1]   : begin  aen = 1'b1; adstb = 1'b1; cif.validDACK = 1'b1; cif.enCurrAddr = 1'b1; cif.ldCurrAddrTemp= 1'b1; cif.ldCurrWordTemp = 1'b1; cif.hrq = 1'b1; end
         
-	    state[iS2]: begin  aen = 1'b1; adstb = 1'b0; checkRead = 1'b1; cif.hrq = 1'b1; checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
-				
+	    state[iS2]   : begin  aen = 1'b1; adstb = 1'b0; checkRead = 1'b1; cif.hrq = 1'b1; checkWriteExtend = 1'b1; cif.enCurrAddr = 1'b0; cif.ldCurrAddrTemp= 1'b0; cif.ldCurrWordTemp = 1'b0; cif.ldTempCurrAddr= 1'b1; cif.ldTempCurrWord = 1'b1; end
+		           	
 
-	    state[iS3]: begin aen = 1'b1; checkWrite = 1'b1; cif.hrq = 1'b1; end
+	    state[iS3]   : begin aen = 1'b1; checkWrite = 1'b1; cif.hrq = 1'b1; end
 		
-	    state[iS4]: begin  cif.ldTempCurrAddr= 1'b0; cif.ldTempCurrWord = 1'b0; cif.validDACK = 1'b0;
+	    state[iS4]   : begin  cif.ldTempCurrAddr= 1'b0; cif.ldTempCurrWord = 1'b0; cif.validDACK = 1'b0;
 			       checkEOP = 1'b1; {cif.hrq, aen} = 2'b00;
 			end
 					
@@ -176,4 +176,3 @@ always_comb begin
 end
 				 
 endmodule
-
