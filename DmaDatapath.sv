@@ -24,7 +24,6 @@ logic [7:0] writeBuf;
 logic masterClear;
 logic FF;
 
-// TODO: Put SW commands in package.
 // DMA Registers SW command codes
 localparam [7:0] READCURRADDR[4]         = {8'b10010000,8'b10010010,8'b10010100,8'b10010110};
 localparam [7:0] WRITEBASECURRADDR[4]    = {8'b10100000,8'b10100010,8'b10100100,8'b10100110};
