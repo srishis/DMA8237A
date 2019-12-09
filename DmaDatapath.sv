@@ -61,12 +61,12 @@ localparam MASTERCLEARREG                = 8'b10101101;
 
 // Data bus logic
   always_ff@(posedge dif.CLK) if(!dif.CS_N && !dif.IOW_N) ioDataBuf <= dif.DB;   
-  assign dif.DB = ((dif.CS_N == '0) && (dif.IOR_N == '0)) ? ioDataBuf : 8'bz;
+  assign dif.DB = (~dif.CS_N && ~dif.IOR_N) ? ioDataBuf : 8'bz;
   
 // Address Bus logic
-  always_ff@(posedge dif.CLK) if(!dif.CS_N) ioAddrBuf <= dif.ADDR_L;  
-  assign dif.ADDR_L = (dif.CS_N) ? ioAddrBuf : 4'bz;
-  assign dif.ADDR_U = (dif.CS_N) ? outAddrBuf : 4'bz;  
+  always_ff@(posedge dif.CLK) if(!dif.CS_N && ~dif.HLDA) ioAddrBuf <= dif.ADDR_L;  
+  assign dif.ADDR_L = (~dif.CS_N && dif.HLDA) ? ioAddrBuf : 4'bz;
+  assign dif.ADDR_U = (~dif.CS_N && dif.HLDA) ? outAddrBuf : 4'bz;
 	
 
 // DMA Registers logic
