@@ -60,21 +60,21 @@ always_ff@(posedge dif.CLK) begin
 end
 
 // IO Read logic
-  assign dif.IOR_N = (dif.HLDA) ? ior : 1'bz;       // access data from peripheral during DMA write transfer
+  assign dif.IOR_N = (~dif.CS_N && dif.HLDA) ? ior : 1'bz;       // access data from peripheral during DMA write transfer
 
 // IO Write logic
-  assign dif.IOW_N = (dif.HLDA) ? iow : 1'bz;       // load data to peripheral during DMA read transfer
+  assign dif.IOW_N = (~dif.CS_N && dif.HLDA) ? iow : 1'bz;       // load data to peripheral during DMA read transfer
 	
 // MEM Read logic
-  assign  dif.MEMR_N = (dif.HLDA) ? memr : 1'bz;   // access data from peripheral during DMA write transfer
+  assign  dif.MEMR_N = (~dif.CS_N && dif.HLDA) ? memr : 1'bz;   // access data from peripheral during DMA write transfer
 	
 // MEM Write logic
-  assign dif.MEMW_N = (dif.HLDA) ? memw : 1'bz;   // load data to peripheral during DMA read transfer
+  assign dif.MEMW_N = (~dif.CS_N && dif.HLDA) ? memw : 1'bz;   // load data to peripheral during DMA read transfer
 	
 // EOP logic
   assign (pull0, pull1) dif.EOP_N = '1;   // pullup resistor logic
-  assign dif.EOP_N = (dif.HLDA) ? eop : 1'bz;
-   
+  assign dif.EOP_N = (~dif.CS_N && dif.HLDA) ? eop : 1'bz;
+
 // Program condition for DMA registers
 always_comb begin
 if(!dif.CS_N && !dif.HLDA)      cif.Program = 1; 
