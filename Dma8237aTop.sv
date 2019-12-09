@@ -1,6 +1,6 @@
 // DMA Top module
 
-module Dma8237aTop(dma_if dif);
+module Dma8237aTop(dma_if.DUT dif);
 
 // DMA interface instantiation
 DmaControlIf cif(dif.CLK, dif.RESET);
